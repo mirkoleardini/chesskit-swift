@@ -193,10 +193,6 @@ struct PGNParserTests {
       try PGNParser.parse(game: "1. e4 e5 $$0 2. Nc6")
     }
 
-    #expect(throws: PGNParser.Error.invalidAnnotation("$999")) {
-      try PGNParser.parse(game: "1. e4 e5 $999 2. Nc6")
-    }
-
     #expect(throws: PGNParser.Error.invalidAnnotation("!!!")) {
       try PGNParser.parse(game: "1. e4 e5!!! 2. Nc6")
     }

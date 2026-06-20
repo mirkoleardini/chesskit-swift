@@ -98,6 +98,19 @@ extension PGNParser {
       var currentToken = iterator.next()
       var currentMoveIndex: MoveTree.Index
 
+      // Skip any leading comments that appear before the first move.
+      // ChessBase (and other tools) export a game comment such as
+      // `{[%evp ...]}` ahead of move 1; without this the parser would
+      // reject the whole game with `.unexpectedMoveTextToken`. There is
+      // no move to attach such a pre-game comment to, so it is dropped.
+      while case .comment = currentToken {
+        currentToken = iterator.next()
+      }
+
+      // A movetext made only of comments (and/or a result) carries no
+      // moves: return the game with its starting position untouched.
+      guard currentToken != nil else { return game }
+
       // determine if first move is white or black
 
       if case let .number(number) = currentToken, let n = Int(number.prefix { $0 != "." }) {
@@ -115,6 +128,8 @@ extension PGNParser {
             throw .invalidMove(san)
           }
         }
+      } else if case .result = currentToken {
+        return game
       } else {
         throw .unexpectedMoveTextToken
       }
@@ -140,11 +155,17 @@ extension PGNParser {
         case let .annotation(annotation):
           if let rawValue = firstMatch(
             in: annotation, for: .numericPosition
-          ), let positionAssessment = Position.Assessment(rawValue: rawValue) {
-            game.annotate(
-              positionAt: currentMoveIndex,
-              assessment: positionAssessment
-            )
+          ) {
+            // Recognised as a numeric position NAG. Annotate when the
+            // glyph is part of the PGN standard ($10–$139); silently
+            // ignore non-standard NAGs (e.g. ChessBase extensions such
+            // as $146 "novelty") rather than rejecting the whole game.
+            if let positionAssessment = Position.Assessment(rawValue: rawValue) {
+              game.annotate(
+                positionAt: currentMoveIndex,
+                assessment: positionAssessment
+              )
+            }
             continue
           }
 

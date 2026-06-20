@@ -46,8 +46,24 @@ extension PGNParser {
       var state = TokenizationState()
       var symbol = ""
       var string = ""
+      var escaped = false
 
       while let c = iterator.next() {
+        // Inside a quoted string the backslash is the PGN escape
+        // character: `\"` denotes a literal quote and `\\` a literal
+        // backslash. Consume the escape so the following character is
+        // taken verbatim and does not close the string early.
+        if state.quoteOpened {
+          if escaped {
+            string += String(c)
+            escaped = false
+            continue
+          } else if c == "\\" {
+            escaped = true
+            continue
+          }
+        }
+
         if c == "[" {
           tokens.append(.openBracket)
         } else if c == "]" {
