@@ -286,8 +286,12 @@ private extension PGNParser.MoveTextParser {
       case .number: Self.isNumber(character)
       case .san: Self.isSAN(character)
       case .annotation: Self.isAnnotation(character)
-      case .variationStart: Self.isVariationStart(character)
-      case .variationEnd: Self.isVariationEnd(character)
+      // Variation delimiters are always single-character tokens: a `(`
+      // or `)` must never extend the current one. Otherwise adjacent
+      // delimiters like `))` (nested variations closing together) or
+      // `((` would collapse into a single token, leaving the variation
+      // stack unbalanced and corrupting the move structure.
+      case .variationStart, .variationEnd: false
       case .result: Self.isResult(character)
       }
     }
