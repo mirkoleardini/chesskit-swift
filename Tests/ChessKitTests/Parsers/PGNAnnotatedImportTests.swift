@@ -104,6 +104,37 @@ struct PGNAnnotatedImportTests {
     #expect(move?.end == .f1)
   }
 
+  /// Three variations closing together (`)))`) must keep the stack
+  /// balanced so the main line resumes from the correct position.
+  /// Each variation replaces the last (same-colour) move, as standard PGN.
+  @Test func parsesTripleNestedVariationsClosingTogether() throws {
+    let pgn = "1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 (5... e6 6. Be2 Be7 (6... Nc6 7. O-O Bd7 (7... Qc7 8. f4))) 6. Be2 *"
+    let game = try PGNParser.parse(game: pgn)
+    #expect(mainLinePly(of: game) == 11) // 1.e4 ... 6.Be2
+  }
+
+  /// Four levels of nesting closing together (`))))`).
+  @Test func parsesQuadrupleNestedVariations() throws {
+    let pgn = "1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 (5... e6 6. Be2 Be7 (6... Nc6 7. O-O Bd7 (7... Qc7 8. f4 e5 (8... Nxd4 9. Qxd4)))) 6. Be2 *"
+    _ = try PGNParser.parse(game: pgn)
+  }
+
+  /// Two sibling variations back-to-back (`)(`) at the same level, the
+  /// second one starting with a comment (as ChessBase emits).
+  @Test func parsesConsecutiveSiblingVariations() throws {
+    let pgn = "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 (3... Nf6 4. d3) ({Other:} 3... d6 4. d4) 4. Ba4 *"
+    let game = try PGNParser.parse(game: pgn)
+    #expect(mainLinePly(of: game) == 7)
+  }
+
+  /// Variations alternating which colour they replace, nested.
+  @Test func parsesMixedColourNestedVariations() throws {
+    // outer replaces a white move (3. Bb5); inner replaces a black move.
+    let pgn = "1. e4 e5 2. Nf3 Nc6 3. Bb5 (3. Bc4 Nf6 (3... Bc5 4. c3) 4. d3) 3... a6 *"
+    let game = try PGNParser.parse(game: pgn)
+    #expect(mainLinePly(of: game) == 6)
+  }
+
   /// A movetext that is only a comment (no moves) must not crash.
   @Test func parsesCommentOnlyMoveText() throws {
     let pgn = """
