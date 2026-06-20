@@ -77,6 +77,25 @@ struct PGNAnnotatedImportTests {
     #expect(mainLinePly == 3)
   }
 
+  /// Reproduces invalidMove("Na5"): a variation that starts with a
+  /// comment, then replays moves with their own move numbers. Na5 is
+  /// legal because 13...a4 (in the variation) vacated a5.
+  /// A variation whose first token is a comment (e.g. ChessBase's
+  /// `({Precedente:} 13... a4 14. d5 Na5 ...)`) must parse. Previously
+  /// the tokenizer dropped the variationStart "(" when a comment followed
+  /// it immediately, so the variation's moves were parsed on the main
+  /// line with the wrong side to move, failing with invalidMove("Na5").
+  @Test func parsesVariationStartingWithComment() throws {
+    let head = "1. e4 Nf6 2. e5 Nd5 3. c4 Nb6 4. d4 d6 5. exd6 exd6 6. Nc3 Be7 7. Nf3 O-O 8. h3 Re8 9. Be2 Bf6 10. O-O Nc6 11. a3 a5 12. b3 Bf5 13. Bb2 g6 "
+    let pgn = head + "({Precedente:} 13... a4 14. d5 Na5 15. Nxa4 Nxa4 16. Bxf6 "
+      + "Qxf6 {0-1 Kaufmann,T (2057)-Hofer,M (2047) chT Rapid Boeblingen 2024 (5.26)}) "
+      + "14. Qd2 *"
+    let game = try PGNParser.parse(game: pgn)
+    let lastMainLine = game.moves.future(for: game.startingIndex).last
+    let mainLinePly = lastMainLine.map { game.moves.history(for: $0).count } ?? 0
+    #expect(mainLinePly == 27) // 13 full moves (26 plies) + 14. Qd2 = 27 plies on the main line
+  }
+
   /// A movetext that is only a comment (no moves) must not crash.
   @Test func parsesCommentOnlyMoveText() throws {
     let pgn = """

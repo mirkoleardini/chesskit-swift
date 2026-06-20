@@ -54,6 +54,14 @@ extension PGNParser {
 
       while let c = iterator.next() {
         if c == "{" {
+          // Flush any pending token before entering a comment. Without
+          // this, a comment immediately following another token (e.g.
+          // "({comment}") swallows it — in particular it would drop a
+          // variationStart "(", corrupting the variation structure.
+          if !currentToken.isEmpty, let token = currentTokenType.convert(currentToken) {
+            tokens.append(token)
+          }
+          currentToken = ""
           currentTokenType = .comment
         } else if c == "}" {
           if currentTokenType != .comment {
