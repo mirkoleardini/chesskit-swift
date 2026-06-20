@@ -28,7 +28,15 @@ public enum PGNParser {
   public static func parse(game pgn: String) throws(Error) -> Game {
     // initial processing
 
-    let lines = pgn.components(separatedBy: .newlines)
+    // Normalise line endings first. Splitting on the `.newlines`
+    // character set treats CRLF (`\r\n`) as two separators and would
+    // insert a spurious empty line between every real line, which then
+    // get miscounted as blank-line section breaks (tooManyLineBreaks).
+    let normalized = pgn
+      .replacingOccurrences(of: "\r\n", with: "\n")
+      .replacingOccurrences(of: "\r", with: "\n")
+
+    let lines = normalized.components(separatedBy: "\n")
       .map { $0.trimmingCharacters(in: .whitespaces) }
       // lines beginning with % are ignored
       .filter { $0.prefix(1) != "%" }

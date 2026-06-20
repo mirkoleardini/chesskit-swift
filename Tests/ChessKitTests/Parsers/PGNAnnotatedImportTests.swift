@@ -63,6 +63,20 @@ struct PGNAnnotatedImportTests {
     #expect(mainLinePly == 4)
   }
 
+  /// A PGN with Windows (CRLF) line endings must parse. Previously the
+  /// `.newlines` split treated `\r\n` as two separators, inserting a
+  /// spurious empty line between every line and failing with
+  /// tooManyLineBreaks.
+  @Test func parsesGameWithCRLFLineEndings() throws {
+    let pgn = "[Event \"Test\"]\r\n[Result \"1-0\"]\r\n\r\n1. e4 e5 2. Nf3 1-0"
+    let game = try PGNParser.parse(game: pgn)
+    #expect(game.tags.event == "Test")
+    #expect(game.tags.result == "1-0")
+    let lastMainLine = game.moves.future(for: game.startingIndex).last
+    let mainLinePly = lastMainLine.map { game.moves.history(for: $0).count } ?? 0
+    #expect(mainLinePly == 3)
+  }
+
   /// A movetext that is only a comment (no moves) must not crash.
   @Test func parsesCommentOnlyMoveText() throws {
     let pgn = """
