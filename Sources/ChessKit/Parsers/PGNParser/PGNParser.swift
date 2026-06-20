@@ -137,6 +137,10 @@ public enum PGNParser {
   private static func movePGN(for move: Move) -> String {
     var result = ""
 
+    if !move.commentBefore.isEmpty {
+      result += "{\(move.commentBefore)} "
+    }
+
     result += "\(move.san) "
 
     if move.assessment != .null {

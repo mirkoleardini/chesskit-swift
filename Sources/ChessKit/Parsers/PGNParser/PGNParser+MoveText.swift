@@ -167,7 +167,10 @@ extension PGNParser {
           {
             currentMoveIndex = game.make(move: move, from: currentMoveIndex)
             if awaitingVariationFirstMove, let pending = pendingVariationComment {
-              setComment(pending, at: currentMoveIndex, in: &game)
+              // A comment that opened the variation introduces this first
+              // move: store it as a *pre-move* comment so it renders before
+              // the move, not after it.
+              game.setCommentBefore(pending, at: currentMoveIndex)
             }
             pendingVariationComment = nil
             awaitingVariationFirstMove = false

@@ -55,8 +55,13 @@ public struct Move: Codable, Hashable, Sendable {
   public internal(set) var checkState: CheckState
   /// The move assessment annotation.
   public var assessment: Assessment
-  /// The comment associated with a move.
+  /// The comment associated with a move (rendered *after* the move).
   public var comment: String
+  /// A comment that precedes the move (rendered *before* it). Used for the
+  /// PGN pattern of a comment at the start of a variation, e.g.
+  /// `({Precedente:} 6... d5 ...)`, where the comment introduces the
+  /// variation rather than annotating the move just played.
+  public var commentBefore: String
 
   /// Initialize a move with the given characteristics.
   public init(
@@ -66,7 +71,8 @@ public struct Move: Codable, Hashable, Sendable {
     end: Square,
     checkState: CheckState = .none,
     assessment: Assessment = .null,
-    comment: String = ""
+    comment: String = "",
+    commentBefore: String = ""
   ) {
     self.result = result
     self.piece = piece
@@ -75,6 +81,7 @@ public struct Move: Codable, Hashable, Sendable {
     self.checkState = checkState
     self.assessment = assessment
     self.comment = comment
+    self.commentBefore = commentBefore
   }
 
   /// Initialize a move with a given SAN string.

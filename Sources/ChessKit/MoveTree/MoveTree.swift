@@ -269,6 +269,17 @@ public struct MoveTree: Codable, Hashable, Sendable {
     return dictionary[index]?.move
   }
 
+  /// Sets a pre-move comment (rendered *before* the move) for the move at
+  /// the provided `index`, without touching its other annotations.
+  ///
+  /// Used for a comment at the start of a variation, which introduces the
+  /// variation rather than annotating the move just played.
+  public mutating func setCommentBefore(_ comment: String, at index: Index) {
+    Self.nodeLock.withLock {
+      dictionary[index]?.move.commentBefore = comment
+    }
+  }
+
   /// Annotates the position at the provided index.
   ///
   /// - parameter index: The index of the position to annotate.

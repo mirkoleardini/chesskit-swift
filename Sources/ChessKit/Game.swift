@@ -203,6 +203,15 @@ public struct Game: Codable, Hashable, Sendable {
     moves.annotate(moveAt: index, assessment: assessment, comment: comment)
   }
 
+  /// Sets a pre-move comment (rendered *before* the move) for the move at
+  /// the provided `index`, leaving its other annotations untouched.
+  public mutating func setCommentBefore(
+    _ comment: String,
+    at index: MoveTree.Index
+  ) {
+    moves.setCommentBefore(comment, at: index)
+  }
+
   /// Annotates the position at the provided `index`.
   ///
   /// - parameter index: The index of the position within the ``MoveTree``.

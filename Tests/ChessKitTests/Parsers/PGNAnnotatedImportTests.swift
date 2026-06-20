@@ -145,8 +145,11 @@ struct PGNAnnotatedImportTests {
     let bb3 = MoveTree.Index(number: 6, color: .white)
     #expect(game.moves.dictionary[bb3]?.move.comment == "Opening note.")
 
+    // The variation's leading comment becomes a *pre-move* comment on its
+    // first move (rendered before it), not a normal post-move comment.
     let d5 = MoveTree.Index(number: 6, color: .black, variation: 1)
-    #expect(game.moves.dictionary[d5]?.move.comment == "Precedente:")
+    #expect(game.moves.dictionary[d5]?.move.commentBefore == "Precedente:")
+    #expect(game.moves.dictionary[d5]?.move.comment == "")
 
     let nf3 = MoveTree.Index(number: 8, color: .white)
     #expect(game.moves.dictionary[nf3]?.move.assessment == .mistake) // $2
