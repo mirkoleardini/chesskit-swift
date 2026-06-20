@@ -135,6 +135,24 @@ struct PGNAnnotatedImportTests {
     #expect(mainLinePly(of: game) == 6)
   }
 
+  /// A variation's leading comment must attach to the variation's first
+  /// move — not overwrite the branch-point move's own comment — and a NAG
+  /// followed by a comment must keep both annotations.
+  @Test func variationLeadingCommentAndNonClobberingAnnotations() throws {
+    let pgn = "1. e4 c5 2. a3 Nc6 3. Bc4 e6 4. Nc3 Nf6 5. d3 a6 6. Bb3 {Opening note.} Qc7 ({Precedente:} 6... d5 7. exd5) 7. f4 b5 8. Nf3 $2 {after NAG} *"
+    let game = try PGNParser.parse(game: pgn)
+
+    let bb3 = MoveTree.Index(number: 6, color: .white)
+    #expect(game.moves.dictionary[bb3]?.move.comment == "Opening note.")
+
+    let d5 = MoveTree.Index(number: 6, color: .black, variation: 1)
+    #expect(game.moves.dictionary[d5]?.move.comment == "Precedente:")
+
+    let nf3 = MoveTree.Index(number: 8, color: .white)
+    #expect(game.moves.dictionary[nf3]?.move.assessment == .mistake) // $2
+    #expect(game.moves.dictionary[nf3]?.move.comment == "after NAG")
+  }
+
   /// A movetext that is only a comment (no moves) must not crash.
   @Test func parsesCommentOnlyMoveText() throws {
     let pgn = """

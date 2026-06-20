@@ -146,6 +146,15 @@ extension PGNParser {
 
       var variationStack = Stack<MoveTree.Index>()
 
+      // A comment can appear at the very start of a variation, before its
+      // first move (e.g. `({Precedente:} 6... d5 ...)`). At that point
+      // `currentMoveIndex` is the branch-point move on the parent line, so
+      // attaching the comment there would mislabel (and overwrite) that
+      // move. Instead we buffer it and attach it to the variation's first
+      // move once it exists.
+      var pendingVariationComment: String?
+      var awaitingVariationFirstMove = false
+
       while let token = iterator.next() {
         currentToken = token
 
@@ -157,6 +166,11 @@ extension PGNParser {
             let move = SANParser.parse(move: san, in: position)
           {
             currentMoveIndex = game.make(move: move, from: currentMoveIndex)
+            if awaitingVariationFirstMove, let pending = pendingVariationComment {
+              setComment(pending, at: currentMoveIndex, in: &game)
+            }
+            pendingVariationComment = nil
+            awaitingVariationFirstMove = false
           } else {
             throw .invalidMove(san)
           }
@@ -188,25 +202,54 @@ extension PGNParser {
           }
 
           if let moveAssessment {
-            game.annotate(moveAt: currentMoveIndex, assessment: moveAssessment)
+            setAssessment(moveAssessment, at: currentMoveIndex, in: &game)
           } else {
             throw .invalidAnnotation(annotation)
           }
         case let .comment(comment):
-          game.annotate(moveAt: currentMoveIndex, comment: comment)
+          if awaitingVariationFirstMove {
+            pendingVariationComment = pendingVariationComment.map { $0 + " " + comment } ?? comment
+          } else {
+            setComment(comment, at: currentMoveIndex, in: &game)
+          }
         case .variationStart:
           variationStack.push(currentMoveIndex)
           currentMoveIndex = currentMoveIndex.previous
+          awaitingVariationFirstMove = true
         case .variationEnd:
           if let index = variationStack.pop() {
             currentMoveIndex = index
           } else {
             throw .unpairedVariationDelimiter
           }
+          pendingVariationComment = nil
+          awaitingVariationFirstMove = false
         }
       }
 
       return game
+    }
+
+    /// Sets a move's comment without clearing its existing assessment.
+    /// `Game.annotate` writes both fields at once, so a plain comment call
+    /// would wipe a NAG set earlier (e.g. `Nd1 $2 {comment}` losing `$2`).
+    private static func setComment(
+      _ comment: String,
+      at index: MoveTree.Index,
+      in game: inout Game
+    ) {
+      let assessment = game.moves.dictionary[index]?.move.assessment ?? .null
+      game.annotate(moveAt: index, assessment: assessment, comment: comment)
+    }
+
+    /// Sets a move's assessment without clearing its existing comment.
+    private static func setAssessment(
+      _ assessment: Move.Assessment,
+      at index: MoveTree.Index,
+      in game: inout Game
+    ) {
+      let comment = game.moves.dictionary[index]?.move.comment ?? ""
+      game.annotate(moveAt: index, assessment: assessment, comment: comment)
     }
 
     private static func firstMatch(in string: String, for pattern: Pattern) -> String? {
