@@ -75,10 +75,12 @@ extension PGNParser {
           }
           state.quoteOpened = true
         } else if c.isCloseQuote && state.quoteOpened {
-          if !string.isEmpty {
-            tokens.append(.string(string))
-            string = ""
-          }
+          // Always emit the string token on the closing quote, even when
+          // empty: an empty tag value (e.g. `[WhiteCountry ""]`, common in
+          // chess.com exports) is still a valid tag pair. Skipping it left
+          // the group with 3 tokens instead of 4 -> invalidTagFormat.
+          tokens.append(.string(string))
+          string = ""
           state.quoteOpened = false
         } else {
           if c.isWhitespace && !state.quoteOpened {

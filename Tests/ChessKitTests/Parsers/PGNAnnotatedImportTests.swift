@@ -156,6 +156,27 @@ struct PGNAnnotatedImportTests {
     #expect(game.moves.dictionary[nf3]?.move.comment == "after NAG")
   }
 
+  /// Empty tag values (e.g. `[WhiteCountry ""]`, common in chess.com
+  /// exports) are valid tag pairs and must parse. Previously the tag
+  /// tokenizer skipped the empty string token, leaving the group with 3
+  /// tokens instead of 4 and failing with `.invalidTagFormat`.
+  @Test func parsesEmptyTagValues() throws {
+    let pgn = """
+    [Event "It"]
+    [White "Tal"]
+    [Black "Akopian"]
+    [Result "1-0"]
+    [WhiteCountry ""]
+    [WhiteTitle ""]
+
+    1. e4 c5 2. Nf3 1-0
+    """
+    let game = try PGNParser.parse(game: pgn)
+    #expect(game.tags.white == "Tal")
+    #expect(game.tags.other["WhiteCountry"] == "")
+    #expect(mainLinePly(of: game) == 3)
+  }
+
   /// A movetext that is only a comment (no moves) must not crash.
   @Test func parsesCommentOnlyMoveText() throws {
     let pgn = """
