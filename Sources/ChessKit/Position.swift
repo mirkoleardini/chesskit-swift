@@ -34,8 +34,18 @@ public struct Position: Codable, Sendable {
   /// Keeps track of the number of moves in a game for the current position.
   public private(set) var clock: Clock
 
-  /// The position assessment annotation.
-  public var assessment: Assessment
+  /// The position assessment annotations.
+  ///
+  /// A position can carry more than one NAG — the PGN standard allows it, and
+  /// in practice an evaluation glyph (e.g. `±`) often coexists with a special
+  /// annotation (e.g. `→` attack) and/or an editorial one (e.g. `∆` with the
+  /// idea). These all live in `Position.Assessment`, so they are stored as a
+  /// list rather than a single value.
+  public var assessments: [Assessment]
+
+  /// Convenience accessor returning the first assessment (or `.null` if the
+  /// position has none). Kept for call sites that expect a single value.
+  public var assessment: Assessment { assessments.first ?? .null }
 
   /// Initialize a position with a given array of pieces and characteristics.
   init(
@@ -44,7 +54,7 @@ public struct Position: Codable, Sendable {
     legalCastlings: LegalCastlings = .init(),
     enPassant: EnPassant? = nil,
     clock: Clock = .init(),
-    assessment: Assessment = .null
+    assessments: [Assessment] = []
   ) {
     self.pieceSet = .init(pieces: pieces)
     self.sideToMove = sideToMove
@@ -52,7 +62,7 @@ public struct Position: Codable, Sendable {
     self.enPassant = enPassant
     self.enPassantIsPossible = enPassant != nil
     self.clock = clock
-    self.assessment = assessment
+    self.assessments = assessments
   }
 
   /// Initialize a move with a provided FEN string.

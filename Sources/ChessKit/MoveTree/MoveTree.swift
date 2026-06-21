@@ -310,7 +310,37 @@ public struct MoveTree: Codable, Hashable, Sendable {
     assessment: Position.Assessment
   ) {
     Self.nodeLock.withLock {
-      dictionary[index]?.positionAssessment = assessment
+      dictionary[index]?.positionAssessments = (assessment == .null) ? [] : [assessment]
+    }
+  }
+
+  /// Replaces the full list of position assessments at the provided index.
+  ///
+  /// - parameter index: The index of the position to annotate.
+  /// - parameter assessments: The assessments to set (null values are dropped).
+  ///
+  public mutating func annotate(
+    positionAt index: Index,
+    assessments: [Position.Assessment]
+  ) {
+    Self.nodeLock.withLock {
+      dictionary[index]?.positionAssessments = assessments.filter { $0 != .null }
+    }
+  }
+
+  /// Appends a single position assessment at the provided index.
+  ///
+  /// No-op when the assessment is `.null` or already present. Used by the PGN
+  /// parser to accumulate multiple NAGs on the same move (e.g. `$14 $36`).
+  public mutating func addPositionAssessment(
+    _ assessment: Position.Assessment,
+    at index: Index
+  ) {
+    guard assessment != .null else { return }
+    Self.nodeLock.withLock {
+      if dictionary[index]?.positionAssessments.contains(assessment) == false {
+        dictionary[index]?.positionAssessments.append(assessment)
+      }
     }
   }
 
@@ -345,8 +375,8 @@ public struct MoveTree: Codable, Hashable, Sendable {
     }
 
     result.append(.move(node.move, node.index))
-    if node.positionAssessment != .null {
-      result.append(.positionAssessment(node.positionAssessment))
+    for assessment in node.positionAssessments {
+      result.append(.positionAssessment(assessment))
     }
 
     var iterator = node.next?.makeIterator()
@@ -364,8 +394,8 @@ public struct MoveTree: Codable, Hashable, Sendable {
 
       result.append(.move(currentNode.move, currentIndex))
 
-      if currentNode.positionAssessment != .null {
-        result.append(.positionAssessment(currentNode.positionAssessment))
+      for assessment in currentNode.positionAssessments {
+        result.append(.positionAssessment(assessment))
       }
 
       // recursively generate PGN for all child nodes
@@ -406,8 +436,10 @@ extension MoveTree {
 
     /// The move for this node.
     var move: Move
-    /// The position assessment for this node.
-    var positionAssessment = Position.Assessment.null
+    /// The position assessments for this node (PGN allows multiple NAGs).
+    var positionAssessments: [Position.Assessment] = []
+    /// Convenience accessor returning the first assessment (or `.null` if none).
+    var positionAssessment: Position.Assessment { positionAssessments.first ?? .null }
     /// The index for this node.
     fileprivate(set) var index = Index.minimum
     /// The previous node.

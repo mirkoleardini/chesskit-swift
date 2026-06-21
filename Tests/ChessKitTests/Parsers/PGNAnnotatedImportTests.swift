@@ -203,6 +203,35 @@ struct PGNAnnotatedImportTests {
     #expect(g2.moves.dictionary[e4]?.positionAssessment == .whiteHasDecisiveAdvantage)
   }
 
+  /// A single position can carry SEVERAL position-category NAGs at once —
+  /// e.g. an evaluation ($14 ⩲), a special ($36 initiative) and an editorial
+  /// ($140 with-the-idea). The PGN standard allows multiple NAGs per move; they
+  /// must all be retained on import (previously each overwrote the last) and
+  /// round-trip back out to PGN.
+  @Test func retainsMultiplePositionAssessments() throws {
+    let game = try PGNParser.parse(game: "1. e4 $14 $36 $140 e5")
+    let e4 = MoveTree.Index(number: 1, color: .white)
+    let assessments = try #require(game.moves.dictionary[e4]?.positionAssessments)
+    #expect(assessments.count == 3)
+    #expect(assessments.contains(.whiteHasSlightAdvantage)) // ⩲ ($14)
+    #expect(assessments.contains(.whiteHasInitiative))      // ↑ ($36)
+    #expect(assessments.contains(.withTheIdea))             // ∆ ($140)
+
+    // Round-trip: all three NAGs survive serialisation back to PGN.
+    let pgn = game.pgn
+    #expect(pgn.contains("$14"))
+    #expect(pgn.contains("$36"))
+    #expect(pgn.contains("$140"))
+
+    // Re-parsing the exported PGN yields the same set (idempotent).
+    let reparsed = try PGNParser.parse(game: pgn)
+    #expect(reparsed.moves.dictionary[e4]?.positionAssessments.count == 3)
+
+    // Duplicate NAGs are deduplicated rather than accumulated.
+    let dup = try PGNParser.parse(game: "1. e4 $14 $14 e5")
+    #expect(dup.moves.dictionary[e4]?.positionAssessments == [.whiteHasSlightAdvantage])
+  }
+
   /// Both $7 (forced) and $8 (singular) are "only move" → □ (ChessBase
   /// shows □ for $8; we previously showed nothing).
   @Test func showsOnlyMoveGlyphForForcedAndSingular() throws {

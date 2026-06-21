@@ -194,9 +194,12 @@ extension PGNParser {
             // essentially never used.
             let normalized = (rawValue == "$32") ? "$222" : rawValue
             if let positionAssessment = Position.Assessment(rawValue: normalized) {
-              game.annotate(
-                positionAt: currentMoveIndex,
-                assessment: positionAssessment
+              // Accumulate rather than overwrite: a move may carry several
+              // position NAGs (e.g. `$14 $36` — slight advantage + initiative),
+              // each arriving as a separate annotation token.
+              game.addPositionAssessment(
+                positionAssessment,
+                at: currentMoveIndex
               )
             }
             continue

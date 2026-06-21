@@ -222,7 +222,35 @@ public struct Game: Codable, Hashable, Sendable {
     assessment: Position.Assessment
   ) {
     moves.annotate(positionAt: index, assessment: assessment)
-    positions[index]?.assessment = assessment
+    positions[index]?.assessments = (assessment == .null) ? [] : [assessment]
+  }
+
+  /// Replaces the full list of position assessments at the provided `index`.
+  ///
+  /// - parameter index: The index of the position within the ``MoveTree``.
+  /// - parameter assessments: The position assessment annotations to set.
+  ///
+  public mutating func annotate(
+    positionAt index: MoveTree.Index,
+    assessments: [Position.Assessment]
+  ) {
+    moves.annotate(positionAt: index, assessments: assessments)
+    positions[index]?.assessments = assessments.filter { $0 != .null }
+  }
+
+  /// Appends a single position assessment at the provided `index`.
+  ///
+  /// No-op when the assessment is `.null` or already present. Used by the PGN
+  /// parser to accumulate multiple NAGs on the same move.
+  public mutating func addPositionAssessment(
+    _ assessment: Position.Assessment,
+    at index: MoveTree.Index
+  ) {
+    moves.addPositionAssessment(assessment, at: index)
+    guard assessment != .null else { return }
+    if positions[index]?.assessments.contains(assessment) == false {
+      positions[index]?.assessments.append(assessment)
+    }
   }
 
   /// The PGN represenation of the game.
