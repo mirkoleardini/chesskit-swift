@@ -107,6 +107,23 @@ public struct MoveTree: Codable, Hashable, Sendable {
     }
   }
 
+  /// The indices of all moves that can follow the move at `index`: the main
+  /// continuation first, then any variation alternatives to it.
+  ///
+  /// Returns an empty array at the end of a line. Useful for offering a
+  /// branch chooser when stepping forward through a game.
+  public func nextOptions(for index: Index) -> [Index] {
+    guard let node = dictionary[index] else {
+      // From the starting position the first move is the tree root.
+      if index == minimumIndex, let root { return [root.index] }
+      return []
+    }
+    var result: [Index] = []
+    if let next = node.next { result.append(next.index) }
+    result.append(contentsOf: node.children.map(\.index))
+    return result
+  }
+
   /// Provides a single history for a given index.
   ///
   /// - parameter index: The index from which to generate the history.

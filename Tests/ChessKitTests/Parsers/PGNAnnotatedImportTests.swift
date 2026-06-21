@@ -243,6 +243,21 @@ struct PGNAnnotatedImportTests {
     #expect(mainLinePly(of: game) == 3)
   }
 
+  /// `nextOptions(for:)` lists the moves that can follow a position: the
+  /// main continuation first, then variation alternatives; empty at the end.
+  @Test func nextOptionsListsMainThenVariations() throws {
+    let game = try PGNParser.parse(game: "1. e4 e5 (1... c5 2. Nf3) 2. Nf3 *")
+    let afterE4 = MoveTree.Index(number: 1, color: .white)
+    let opts = game.moves.nextOptions(for: afterE4)
+    #expect(opts.count == 2)
+    #expect(opts.first == MoveTree.Index(number: 1, color: .black))        // e5 (main)
+    #expect(opts.last == MoveTree.Index(number: 1, color: .black, variation: 1)) // c5 (var)
+    // single continuation
+    #expect(game.moves.nextOptions(for: MoveTree.Index(number: 1, color: .black)).count == 1)
+    // end of line
+    #expect(game.moves.nextOptions(for: MoveTree.Index(number: 2, color: .white)).isEmpty)
+  }
+
   /// A movetext that is only a comment (no moves) must not crash.
   @Test func parsesCommentOnlyMoveText() throws {
     let pgn = """
