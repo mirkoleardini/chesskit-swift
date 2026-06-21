@@ -171,8 +171,8 @@ struct PGNAnnotatedImportTests {
     #expect(game.moves.dictionary[nc6]?.positionAssessment == .null)
   }
 
-  /// chess.com-specific NAGs: $9 "Miss" (✗), $222 development lead (⇈),
-  /// and the out-of-range $256 it exports for "with compensation" (⯹).
+  /// chess.com-specific NAGs: $9 "Miss" (✗), $222 development lead (↑↑),
+  /// and the out-of-range $256 it exports for "with compensation" (=∞).
   @Test func recognisesChessComSpecificNAGs() throws {
     let game = try PGNParser.parse(game: "1. e4 $9 e5 $222 2. Nf3 $256")
     let e4 = MoveTree.Index(number: 1, color: .white)
@@ -180,10 +180,19 @@ struct PGNAnnotatedImportTests {
     #expect(game.moves.dictionary[e4]?.move.assessment.notation == "✗")
     let e5 = MoveTree.Index(number: 1, color: .black)
     #expect(game.moves.dictionary[e5]?.positionAssessment == .developmentLead)
-    #expect(game.moves.dictionary[e5]?.positionAssessment.symbol == "⇈")
+    #expect(game.moves.dictionary[e5]?.positionAssessment.symbol == "↑↑")
     let nf3 = MoveTree.Index(number: 2, color: .white)
     #expect(game.moves.dictionary[nf3]?.positionAssessment == .withCompensationAlt)
-    #expect(game.moves.dictionary[nf3]?.positionAssessment.symbol == "⯹")
+    #expect(game.moves.dictionary[nf3]?.positionAssessment.symbol == "=∞")
+  }
+
+  /// lichess (mis)uses the standard $32 for "development"; we normalise it
+  /// to the de-facto development NAG $222 (glyph ↑↑) on read.
+  @Test func remapsLichessDevelopmentNAG32() throws {
+    let game = try PGNParser.parse(game: "1. e4 e5 $32")
+    let e5 = MoveTree.Index(number: 1, color: .black)
+    #expect(game.moves.dictionary[e5]?.positionAssessment == .developmentLead)
+    #expect(game.moves.dictionary[e5]?.positionAssessment.symbol == "↑↑")
   }
 
   /// Empty tag values (e.g. `[WhiteCountry ""]`, common in chess.com

@@ -185,7 +185,15 @@ extension PGNParser {
             // glyph is part of the PGN standard ($10–$139); silently
             // ignore non-standard NAGs (e.g. ChessBase extensions such
             // as $146 "novelty") rather than rejecting the whole game.
-            if let positionAssessment = Position.Assessment(rawValue: rawValue) {
+            //
+            // lichess (mis)uses the standard time-advantage code $32 to
+            // mean "development"; normalise it to the de-facto development
+            // NAG $222 so it is read — and re-exported — consistently.
+            // In practice this is safe: chess.com (the other producer)
+            // does not emit $32, and genuine $32-as-time-advantage is
+            // essentially never used.
+            let normalized = (rawValue == "$32") ? "$222" : rawValue
+            if let positionAssessment = Position.Assessment(rawValue: normalized) {
               game.annotate(
                 positionAt: currentMoveIndex,
                 assessment: positionAssessment

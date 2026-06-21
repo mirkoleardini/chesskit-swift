@@ -406,11 +406,14 @@ extension Position {
       case .whiteHasInitiative, .blackHasInitiative,
            .whiteHasLastingInitiative, .blackHasLastingInitiative: "↑"
       case .whiteHasAttack, .blackHasAttack: "→"
+      // Compensation: the official Unicode glyph (U+2BF9) renders as tofu
+      // in many monospaced fonts, so use the de-facto "=∞" (as lichess/
+      // chess.com do).
       case .whiteSufficientCompensation, .blackSufficientCompensation,
-           .whiteMoreThanAdequateCompensation, .blackMoreThanAdequateCompensation: "⯹"
+           .whiteMoreThanAdequateCompensation, .blackMoreThanAdequateCompensation: "=∞"
       case .whiteHasSlightCounterplay, .blackHasSlightCounterplay,
            .whiteHasModerateCounterplay, .blackHasModerateCounterplay,
-           .whiteHasDecisiveCounterplay, .blackHasDecisiveCounterplay: "⇄"
+           .whiteHasDecisiveCounterplay, .blackHasDecisiveCounterplay: "⇆"
       case .whiteModerateTimeControlPressure, .blackModerateTimeControlPressure,
            .whiteSevereTimeControlPressure, .blackSevereTimeControlPressure: "⊕"
       // Non-standard de-facto glyphs.
@@ -420,8 +423,8 @@ extension Position {
       case .equivalentIs: "="
       case .editorialComment: "RR"
       case .novelty: "N"
-      case .developmentLead: "⇈"
-      case .withCompensationAlt: "⯹"
+      case .developmentLead: "↑↑"
+      case .withCompensationAlt: "=∞"
       case .file: "⇔"
       case .diagonal: "⇗"
       case .kingside: "≫"
