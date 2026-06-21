@@ -186,6 +186,23 @@ struct PGNAnnotatedImportTests {
     #expect(game.moves.dictionary[nf3]?.positionAssessment.symbol == "=∞")
   }
 
+  /// A move can carry BOTH a move glyph (!) and a position glyph (+−) at
+  /// once — in PGN two separate NAGs, e.g. "d5 $1 $18" or "d5! $18". The
+  /// two live in different fields (Move.assessment vs positionAssessment)
+  /// and must coexist, in either notation.
+  @Test func handlesMoveAndPositionAnnotationsTogether() throws {
+    // suffix glyph + numeric NAG
+    let g1 = try PGNParser.parse(game: "1. e4! $18 e5")
+    let e4 = MoveTree.Index(number: 1, color: .white)
+    #expect(g1.moves.dictionary[e4]?.move.assessment == .good)            // !
+    #expect(g1.moves.dictionary[e4]?.positionAssessment == .whiteHasDecisiveAdvantage) // +−
+
+    // two numeric NAGs
+    let g2 = try PGNParser.parse(game: "1. e4 $1 $18 e5")
+    #expect(g2.moves.dictionary[e4]?.move.assessment == .good)
+    #expect(g2.moves.dictionary[e4]?.positionAssessment == .whiteHasDecisiveAdvantage)
+  }
+
   /// lichess (mis)uses the standard $32 for "development"; we normalise it
   /// to the de-facto development NAG $222 (glyph ↑↑) on read.
   @Test func remapsLichessDevelopmentNAG32() throws {
