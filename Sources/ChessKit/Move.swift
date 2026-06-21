@@ -141,7 +141,9 @@ extension Move {
       case .dubious: "?!"
       case .forced: "□"
       case .singular: ""
-      case .worst: ""
+      // $9 has no traditional glyph; chess.com labels it "Miss" and shows
+      // a cross. Use ✗ to match.
+      case .worst: "✗"
       }
     }
 

@@ -363,6 +363,7 @@ extension Position {
     case novelty = "$146"
     case diagram = "$220"
     case diagramFromBlack = "$221"
+    case developmentLead = "$222"
     case spaceAdvantage = "$238"
     case file = "$239"
     case diagonal = "$240"
@@ -381,6 +382,10 @@ extension Position {
     case pawnMajority = "$253"
     case withTokens = "$254"
     case withoutTokens = "$255"
+    // chess.com exports "with compensation" as the out-of-range $256
+    // (the standard codes are $44/$45). Recognised so it displays as
+    // compensation; our own export keeps the standard codes.
+    case withCompensationAlt = "$256"
 
     /// The human-readable symbol for the assessment, or an empty string if
     /// there is no established glyph. Standard evaluation glyphs (`=`, `∞`,
@@ -415,6 +420,8 @@ extension Position {
       case .equivalentIs: "="
       case .editorialComment: "RR"
       case .novelty: "N"
+      case .developmentLead: "⇈"
+      case .withCompensationAlt: "⯹"
       case .file: "⇔"
       case .diagonal: "⇗"
       case .kingside: "≫"
