@@ -397,7 +397,7 @@ extension Position {
       case .blackHasModerateAdvantage: "∓"
       case .whiteHasDecisiveAdvantage, .whiteHasCrushingAdvantage: "+−"
       case .blackHasDecisiveAdvantage, .blackHasCrushingAdvantage: "−+"
-      case .whiteInZugzwang, .blackInZugzwang: "⨀"
+      case .whiteInZugzwang, .blackInZugzwang: "⊙"
       case .whiteHasInitiative, .blackHasInitiative,
            .whiteHasLastingInitiative, .blackHasLastingInitiative: "↑"
       case .whiteHasAttack, .blackHasAttack: "→"
@@ -405,7 +405,7 @@ extension Position {
            .whiteMoreThanAdequateCompensation, .blackMoreThanAdequateCompensation: "⯹"
       case .whiteHasSlightCounterplay, .blackHasSlightCounterplay,
            .whiteHasModerateCounterplay, .blackHasModerateCounterplay,
-           .whiteHasDecisiveCounterplay, .blackHasDecisiveCounterplay: "⇆"
+           .whiteHasDecisiveCounterplay, .blackHasDecisiveCounterplay: "⇄"
       case .whiteModerateTimeControlPressure, .blackModerateTimeControlPressure,
            .whiteSevereTimeControlPressure, .blackSevereTimeControlPressure: "⊕"
       // Non-standard de-facto glyphs.
