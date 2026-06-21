@@ -203,6 +203,16 @@ struct PGNAnnotatedImportTests {
     #expect(g2.moves.dictionary[e4]?.positionAssessment == .whiteHasDecisiveAdvantage)
   }
 
+  /// Both $7 (forced) and $8 (singular) are "only move" → □ (ChessBase
+  /// shows □ for $8; we previously showed nothing).
+  @Test func showsOnlyMoveGlyphForForcedAndSingular() throws {
+    let game = try PGNParser.parse(game: "1. e4 $7 e5 $8")
+    let e4 = MoveTree.Index(number: 1, color: .white)
+    let e5 = MoveTree.Index(number: 1, color: .black)
+    #expect(game.moves.dictionary[e4]?.move.assessment.notation == "□")
+    #expect(game.moves.dictionary[e5]?.move.assessment.notation == "□")
+  }
+
   /// lichess (mis)uses the standard $32 for "development"; we normalise it
   /// to the de-facto development NAG $222 (glyph ↑↑) on read.
   @Test func remapsLichessDevelopmentNAG32() throws {

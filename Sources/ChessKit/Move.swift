@@ -139,8 +139,8 @@ extension Move {
       case .blunder: "??"
       case .interesting: "!?"
       case .dubious: "?!"
-      case .forced: "□"
-      case .singular: ""
+      // $7 "forced" and $8 "singular" are both "only move" → □.
+      case .forced, .singular: "□"
       // $9 has no traditional glyph; chess.com labels it "Miss" and shows
       // a cross. Use ✗ to match.
       case .worst: "✗"
