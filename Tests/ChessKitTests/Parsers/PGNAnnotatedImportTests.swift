@@ -156,6 +156,21 @@ struct PGNAnnotatedImportTests {
     #expect(game.moves.dictionary[nf3]?.move.comment == "after NAG")
   }
 
+  /// Non-standard de-facto NAGs ($140-$146, $220-$255) are now recognised
+  /// (not discarded) and expose a glyph. `$146` is the novelty mark "N".
+  @Test func recognisesNonStandardNAGsWithSymbols() throws {
+    let game = try PGNParser.parse(game: "1. e4 e5 $146 2. Nf3 $14 Nc6 $999")
+    let e5 = MoveTree.Index(number: 1, color: .black)
+    #expect(game.moves.dictionary[e5]?.positionAssessment == .novelty)
+    #expect(game.moves.dictionary[e5]?.positionAssessment.symbol == "N")
+    let nf3 = MoveTree.Index(number: 2, color: .white)
+    #expect(game.moves.dictionary[nf3]?.positionAssessment == .whiteHasSlightAdvantage)
+    #expect(game.moves.dictionary[nf3]?.positionAssessment.symbol == "⩲")
+    // Truly unknown NAGs (e.g. $999) remain tolerated and ignored.
+    let nc6 = MoveTree.Index(number: 2, color: .black)
+    #expect(game.moves.dictionary[nc6]?.positionAssessment == .null)
+  }
+
   /// Empty tag values (e.g. `[WhiteCountry ""]`, common in chess.com
   /// exports) are valid tag pairs and must parse. Previously the tag
   /// tokenizer skipped the empty string token, leaving the group with 3

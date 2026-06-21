@@ -347,6 +347,82 @@ extension Position {
     case blackModerateTimeControlPressure = "$137"
     case whiteSevereTimeControlPressure = "$138"
     case blackSevereTimeControlPressure = "$139"
+
+    // MARK: Non-standard NAGs ($140+)
+    //
+    // Above $139 the PGN standard reserves the range; these are a de-facto
+    // set (originating with ChessPad) used by ChessBase, chess.com, lichess
+    // and others. Included so they are recognised and round-tripped rather
+    // than discarded. `$146` ("N", novelty) is the most universal.
+    case withTheIdea = "$140"
+    case aimedAgainst = "$141"
+    case betterIs = "$142"
+    case worseIs = "$143"
+    case equivalentIs = "$144"
+    case editorialComment = "$145"
+    case novelty = "$146"
+    case diagram = "$220"
+    case diagramFromBlack = "$221"
+    case spaceAdvantage = "$238"
+    case file = "$239"
+    case diagonal = "$240"
+    case centre = "$241"
+    case kingside = "$242"
+    case queenside = "$243"
+    case weakPoint = "$244"
+    case ending = "$245"
+    case bishopPair = "$246"
+    case oppositeBishops = "$247"
+    case sameBishops = "$248"
+    case connectedPawns = "$249"
+    case isolatedPawns = "$250"
+    case doubledPawns = "$251"
+    case passedPawn = "$252"
+    case pawnMajority = "$253"
+    case withTokens = "$254"
+    case withoutTokens = "$255"
+
+    /// The human-readable symbol for the assessment, or an empty string if
+    /// there is no established glyph. Standard evaluation glyphs (`=`, `∞`,
+    /// `⩲`, `±`, …) plus the common non-standard ones (`N`, `∆`, …).
+    public var symbol: String {
+      switch self {
+      // Standard evaluation glyphs (the ones that actually appear in games).
+      case .drawishPosition: "="
+      case .equalChancesQuietPosition, .equalChancesActivePosition: "="
+      case .unclearPosition: "∞"
+      case .whiteHasSlightAdvantage: "⩲"
+      case .blackHasSlightAdvantage: "⩱"
+      case .whiteHasModerateAdvantage: "±"
+      case .blackHasModerateAdvantage: "∓"
+      case .whiteHasDecisiveAdvantage, .whiteHasCrushingAdvantage: "+−"
+      case .blackHasDecisiveAdvantage, .blackHasCrushingAdvantage: "−+"
+      case .whiteInZugzwang, .blackInZugzwang: "⨀"
+      case .whiteHasInitiative, .blackHasInitiative,
+           .whiteHasLastingInitiative, .blackHasLastingInitiative: "↑"
+      case .whiteHasAttack, .blackHasAttack: "→"
+      case .whiteSufficientCompensation, .blackSufficientCompensation,
+           .whiteMoreThanAdequateCompensation, .blackMoreThanAdequateCompensation: "⯹"
+      case .whiteHasSlightCounterplay, .blackHasSlightCounterplay,
+           .whiteHasModerateCounterplay, .blackHasModerateCounterplay,
+           .whiteHasDecisiveCounterplay, .blackHasDecisiveCounterplay: "⇆"
+      case .whiteModerateTimeControlPressure, .blackModerateTimeControlPressure,
+           .whiteSevereTimeControlPressure, .blackSevereTimeControlPressure: "⊕"
+      // Non-standard de-facto glyphs.
+      case .withTheIdea: "∆"
+      case .aimedAgainst: "∇"
+      case .betterIs, .worseIs: "⌓"
+      case .equivalentIs: "="
+      case .editorialComment: "RR"
+      case .novelty: "N"
+      case .file: "⇔"
+      case .diagonal: "⇗"
+      case .kingside: "≫"
+      case .queenside: "≪"
+      case .weakPoint: "✕"
+      default: ""
+      }
+    }
   }
 
 }
