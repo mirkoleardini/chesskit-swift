@@ -419,7 +419,8 @@ extension Position {
       // Non-standard de-facto glyphs.
       case .withTheIdea: "∆"
       case .aimedAgainst: "∇"
-      case .betterIs, .worseIs: "⌓"
+      case .betterIs: "⌓"
+      case .worseIs: "≤"
       case .equivalentIs: "="
       case .editorialComment: "RR"
       case .novelty: "N"
@@ -431,6 +432,20 @@ extension Position {
       case .queenside: "≪"
       case .weakPoint: "✕"
       default: ""
+      }
+    }
+
+    /// Whether this assessment is an "editorial / idea" annotation that
+    /// introduces the move and is therefore rendered *before* it (the
+    /// ChessBase / Informant convention), e.g. `∆Qc2` ("with the idea
+    /// Qc2"), `=Ra6` ("equivalent is Ra6"). Distinguishes `$144 =`
+    /// (equivalent-is) from `$10–$12 =` (equal position), which stays a
+    /// suffix. The evaluation glyphs (`±`, `∞`, `N`, …) are not editorial.
+    public var isEditorial: Bool {
+      switch self {
+      case .withTheIdea, .aimedAgainst, .betterIs, .worseIs,
+           .equivalentIs, .editorialComment: true
+      default: false
       }
     }
   }
