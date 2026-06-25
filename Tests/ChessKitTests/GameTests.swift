@@ -301,6 +301,44 @@ final class GameTests {
     #expect(game.moves.map(\.?.san).contains("gxh1=Q+"))
   }
 
+  // MARK: Move removal
+
+  /// A single move can only be removed when it is the last of its line; a move
+  /// with continuations is left untouched.
+  @Test func removesOnlyTheLastMoveOfALine() throws {
+    var g = try PGNParser.parse(game: "1. e4 e5 2. Nf3 Nc6 3. Bb5")
+    let e4 = MoveTree.Index(number: 1, color: .white)
+    let bb5 = MoveTree.Index(number: 3, color: .white)
+
+    #expect(g.isLastMove(at: e4) == false)
+    #expect(g.isLastMove(at: bb5) == true)
+
+    #expect(g.removeMove(at: e4) == false)        // refuses a non-leaf
+    #expect(g.pgn.contains("Bb5"))
+
+    #expect(g.removeMove(at: bb5) == true)        // removes the leaf
+    #expect(!g.pgn.contains("Bb5"))
+    #expect(g.pgn.contains("Nc6"))
+    #expect(g.positions[bb5] == nil)
+    #expect(g.isLastMove(at: MoveTree.Index(number: 2, color: .black)) == true)
+  }
+
+  /// Removing the continuation truncates everything after a move — its main
+  /// line and any variations branching after it — leaving it as a leaf.
+  @Test func removesContinuationIncludingVariations() throws {
+    var g = try PGNParser.parse(game: "1. e4 e5 (1... c5 2. Nf3) 2. Nf3 Nc6")
+    let e4 = MoveTree.Index(number: 1, color: .white)
+
+    g.removeContinuation(after: e4)
+
+    #expect(g.isLastMove(at: e4) == true)
+    let pgn = g.pgn
+    #expect(pgn.contains("e4"))
+    #expect(!pgn.contains("e5"))
+    #expect(!pgn.contains("c5"))
+    #expect(!pgn.contains("Nf3"))
+  }
+
 }
 
 extension GameTests {

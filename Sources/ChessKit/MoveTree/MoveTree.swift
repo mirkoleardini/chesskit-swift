@@ -344,6 +344,87 @@ public struct MoveTree: Codable, Hashable, Sendable {
     }
   }
 
+  // MARK: - Removing moves
+
+  /// Whether the move at `index` is the last of its line — it has no
+  /// continuation and no variations branching after it — and can therefore be
+  /// removed on its own with ``remove(at:)``.
+  public func isLastMove(at index: Index) -> Bool {
+    guard let node = dictionary[index] else { return false }
+    return node.next == nil && node.children.isEmpty
+  }
+
+  /// Removes the move at `index`, but only when it is the last of its line
+  /// (see ``isLastMove(at:)``). Removing a move with continuations would orphan
+  /// them, so this is a no-op (returning `false`) in that case.
+  ///
+  /// - returns: `true` if the move was removed.
+  @discardableResult
+  public mutating func remove(at index: Index) -> Bool {
+    guard let node = dictionary[index], node.next == nil, node.children.isEmpty else {
+      return false
+    }
+    if let previous = node.previous {
+      if previous.next === node {
+        previous.next = nil
+      } else {
+        previous.children.removeAll { $0 === node }
+      }
+    } else {
+      root = nil
+    }
+    node.previous = nil
+    Self.nodeLock.withLock { dictionary[index] = nil }
+    recomputeLastMainVariationIndex()
+    return true
+  }
+
+  /// Removes everything after the move at `index`: its continuation and any
+  /// variations branching after it, recursively. The move at `index` stays and
+  /// becomes the end of its line.
+  ///
+  /// - returns: The indices that were removed (so callers can drop the matching
+  ///   positions).
+  @discardableResult
+  public mutating func removeContinuation(after index: Index) -> [Index] {
+    guard let node = dictionary[index] else { return [] }
+    let removed = subtreeNodes(from: node).map(\.index)
+    node.next = nil
+    node.children = []
+    Self.nodeLock.withLock {
+      for removedIndex in removed { dictionary[removedIndex] = nil }
+    }
+    recomputeLastMainVariationIndex()
+    return removed
+  }
+
+  /// All nodes reachable after `node` (its `next` chain and every variation),
+  /// not including `node` itself.
+  private func subtreeNodes(from node: Node) -> [Node] {
+    var result: [Node] = []
+    if let next = node.next {
+      result.append(next)
+      result.append(contentsOf: subtreeNodes(from: next))
+    }
+    for child in node.children {
+      result.append(child)
+      result.append(contentsOf: subtreeNodes(from: child))
+    }
+    return result
+  }
+
+  /// Recomputes `lastMainVariationIndex` by walking the main line (`root` and
+  /// its `next` chain) to the end. Used after a removal.
+  private mutating func recomputeLastMainVariationIndex() {
+    guard let root else {
+      lastMainVariationIndex = .minimum
+      return
+    }
+    var node = root
+    while let next = node.next { node = next }
+    lastMainVariationIndex = node.index
+  }
+
   // MARK: - PGN
 
   /// An element for representing the ``MoveTree`` in

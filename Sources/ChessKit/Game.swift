@@ -253,6 +253,31 @@ public struct Game: Codable, Hashable, Sendable {
     }
   }
 
+  // MARK: - Removing moves
+
+  /// Whether the move at `index` is the last of its line and can be removed on
+  /// its own (see ``MoveTree/isLastMove(at:)``).
+  public func isLastMove(at index: MoveTree.Index) -> Bool {
+    moves.isLastMove(at: index)
+  }
+
+  /// Removes the move at `index` when it is the last of its line, dropping its
+  /// stored position too. No-op (returns `false`) for a move with continuations.
+  @discardableResult
+  public mutating func removeMove(at index: MoveTree.Index) -> Bool {
+    guard moves.remove(at: index) else { return false }
+    positions[index] = nil
+    return true
+  }
+
+  /// Removes everything after the move at `index` (continuation and variations),
+  /// leaving that move as the end of its line, and drops the matching positions.
+  public mutating func removeContinuation(after index: MoveTree.Index) {
+    for removed in moves.removeContinuation(after: index) {
+      positions[removed] = nil
+    }
+  }
+
   /// The PGN represenation of the game.
   public var pgn: String {
     PGNParser.convert(game: self)
