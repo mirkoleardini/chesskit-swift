@@ -93,9 +93,14 @@ struct MoveTests {
     #expect(Move.Assessment.blunder.notation == "??")
     #expect(Move.Assessment.interesting.notation == "!?")
     #expect(Move.Assessment.dubious.notation == "?!")
+    // $7 (forced) and $8 (singular) both mean "only move" and share the
+    // glyph; $9 has no traditional glyph and follows chess.com's "Miss".
+    // These are display glyphs only: export writes the raw NAG code, so the
+    // two assessments stay distinct in PGN despite the shared symbol — which
+    // is why `Assessment(notation: "□")` resolving to $7 below is harmless.
     #expect(Move.Assessment.forced.notation == "□")
-    #expect(Move.Assessment.singular.notation == "")
-    #expect(Move.Assessment.worst.notation == "")
+    #expect(Move.Assessment.singular.notation == "□")
+    #expect(Move.Assessment.worst.notation == "✗")
 
     #expect(Move.Assessment(notation: "") == .null)
     #expect(Move.Assessment(notation: "!") == .good)
