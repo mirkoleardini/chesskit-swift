@@ -85,7 +85,7 @@ public enum PGNParser {
       .forEach { pgn += $0 + "\n" }
 
     game.tags.other.sorted(by: <).forEach { key, value in
-      pgn += "[\(key) \"\(value)\"]\n"
+      pgn += "[\(key) \"\(PGNTagParser.escaped(tagValue: value))\"]\n"
     }
 
     if !pgn.isEmpty {

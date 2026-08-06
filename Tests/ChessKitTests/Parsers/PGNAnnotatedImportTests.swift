@@ -9,7 +9,8 @@
 //    3. non-standard numeric NAGs above the PGN standard ($139);
 //    4. CRLF line endings;
 //    5. a variation whose first token is a comment (`({comment} ...)`);
-//    6. nested variations closing together (`))`).
+//    6. nested variations closing together (`))`);
+//    7. re-escaping those quotes on export, so the game round-trips.
 //
 
 @testable import ChessKit
@@ -48,6 +49,27 @@ struct PGNAnnotatedImportTests {
     #expect(game.tags.event == #"Test "Quoted" Open 2026"#)
     // The full main line (34 plies) must be present.
     #expect(mainLinePly(of: game) == 34)
+  }
+
+  /// Export must re-escape what parsing unescaped, for named tags (Event)
+  /// and custom ones alike, so a game round-trips through PGN.
+  ///
+  /// Previously the value was interpolated raw: an event named
+  /// `4 Festival "Città di Gubbio"` was written back with bare inner quotes,
+  /// which closed the tag string early and made the exported PGN
+  /// unparseable (mismatchedTagBrackets) — silently losing the movetext of
+  /// every game whose tags contain a quote.
+  @Test func roundTripsTagValuesContainingQuotesAndBackslashes() throws {
+    let game = try PGNParser.parse(game: Self.annotatedGame)
+    var exported = game
+    exported.tags.other["Source"] = #"a \ backslash and a "quote""#
+
+    let reparsed = try PGNParser.parse(game: exported.pgn)
+
+    #expect(reparsed.tags.event == #"Test "Quoted" Open 2026"#)
+    #expect(reparsed.tags.other["Source"] == #"a \ backslash and a "quote""#)
+    // The movetext must survive the round trip, not just the tags.
+    #expect(mainLinePly(of: reparsed) == 34)
   }
 
   /// Non-standard numeric NAGs above the PGN standard ($139) must be

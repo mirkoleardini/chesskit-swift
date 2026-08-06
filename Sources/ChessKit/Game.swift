@@ -317,9 +317,13 @@ extension Game {
 
     /// The PGN representation of this tag.
     ///
-    /// Formatted as `[Name "Value"]`.
+    /// Formatted as `[Name "Value"]`, with any quote or backslash in the
+    /// value escaped so the tag pair can be read back (see
+    /// ``PGNParser/PGNTagParser/escaped(tagValue:)``).
     public var pgn: String {
-      wrappedValue.isEmpty ? "" : "[\(name) \"\(wrappedValue)\"]"
+      wrappedValue.isEmpty
+        ? ""
+        : "[\(name) \"\(PGNParser.PGNTagParser.escaped(tagValue: wrappedValue))\"]"
     }
 
   }

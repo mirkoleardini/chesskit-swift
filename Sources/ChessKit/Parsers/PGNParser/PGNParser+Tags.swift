@@ -36,6 +36,35 @@ extension PGNParser {
       return gameTags
     }
 
+    /// Escapes a tag value for export, mirroring the unescaping done by
+    /// ``tokenize(tags:)``.
+    ///
+    /// - parameter value: The tag value as held in memory, with any quotes
+    /// and backslashes as literal characters.
+    /// - returns: The value with `"` written as `\"` and `\` as `\\`.
+    ///
+    /// The PGN Standard defines the backslash as the escape character inside
+    /// a quoted tag string. Without this, a value that itself contains a
+    /// quote — e.g. an event named `4 Festival "Città di Gubbio"` — would be
+    /// written as `[Event "4 Festival "Città di Gubbio""]`, whose inner quote
+    /// closes the string early and makes the whole tag pair unparseable
+    /// (mismatchedTagBrackets) on the next read.
+    ///
+    /// Each character is inspected once, so the backslash introduced for one
+    /// character is never escaped again by a later pass.
+    static func escaped(tagValue value: String) -> String {
+      var escaped = ""
+
+      for c in value {
+        if c == "\"" || c == "\\" {
+          escaped += "\\"
+        }
+        escaped += String(c)
+      }
+
+      return escaped
+    }
+
     // MARK: Private
 
     private static func tokenize(tags: String) throws(PGNParser.Error) -> [Token] {
