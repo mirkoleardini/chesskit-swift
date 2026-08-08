@@ -10,3 +10,6 @@ Package.resolved
 /*.xcodeproj
 xcuserdata/
 /*.playground/*
+
+# Xcode build products (a package built from the app project)
+build/
