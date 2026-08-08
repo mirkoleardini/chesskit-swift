@@ -92,7 +92,7 @@ public enum Square: Int, CaseIterable, Codable, Sendable {
   /// - parameter file: The file (column) of the square, from `a` to `h`.
   /// - parameter rank: The rank (row) of the square, from `1` to `8`.
   ///
-  init(_ file: File, _ rank: Rank) {
+  public init(_ file: File, _ rank: Rank) {
     switch (file, rank) {
     case (.a, 1): self = .a1
     case (.a, 2): self = .a2
