@@ -1,0 +1,23 @@
+{
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Bitboards/Square+BB.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Square+BB.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Square+BB.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Square+BB.dia",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Square+BB.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Square+BB.swiftdeps"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Board.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Board.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Board.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Board.dia",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Board.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Board.swiftdeps"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/BoardDelegate.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/BoardDelegate.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/BoardDelegate.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/BoardDelegate.dia",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/BoardDelegate.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/BoardDelegate.swiftdeps"
+  }
+}

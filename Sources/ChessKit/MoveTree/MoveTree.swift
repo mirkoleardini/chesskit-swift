@@ -72,9 +72,18 @@ public struct MoveTree: Codable, Hashable, Sendable {
       parent.next = newNode
     } else {
       parent.children.append(newNode)
-      while indices.contains(newIndex) {
-        newIndex.variation += 1
-      }
+    }
+
+    // Find a free index REGARDLESS of how the node was attached. This used to
+    // run only for a sibling branch, on the assumption that extending a line
+    // always lands on a fresh index — but a line extended from a node that was
+    // itself reached by merging carries that node's variation number forward,
+    // and can walk straight into indices another branch already owns. The
+    // dictionary below is keyed by index, so a clash silently replaced a live
+    // node: lookups then resolved to the wrong move and the tree serialised to
+    // an illegal game.
+    while indices.contains(newIndex) {
+      newIndex.variation += 1
     }
 
     Self.nodeLock.withLock {

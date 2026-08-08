@@ -1,0 +1,23 @@
+{
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Position.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Position.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Position.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Position.dia",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Position.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Position.swiftdeps"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Special Moves/Castling.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Castling.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Castling.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Castling.dia",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Castling.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/Castling.swiftdeps"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Special Moves/EnPassant.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/EnPassant.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/EnPassant.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/EnPassant.dia",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/EnPassant.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/arm64/EnPassant.swiftdeps"
+  }
+}

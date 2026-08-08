@@ -1,0 +1,309 @@
+{
+  "" : {
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/ChessKit-primary.dia",
+    "emit-module-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/ChessKit-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/ChessKit-primary-emit-module.dia",
+    "pch" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/ChessKit-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/ChessKit-primary.swiftdeps"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Bitboards/Attacks.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Attacks.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Attacks.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Attacks.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Attacks.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Attacks.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Attacks.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Attacks.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Attacks~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Bitboards/Bitboard.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Bitboard.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Bitboard.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Bitboard.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Bitboard.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Bitboard.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Bitboard.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Bitboard.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Bitboard~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Bitboards/PieceSet.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PieceSet.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PieceSet.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PieceSet.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PieceSet.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PieceSet.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PieceSet.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PieceSet.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PieceSet~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Bitboards/Square+BB.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square+BB.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square+BB.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square+BB.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square+BB.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square+BB.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square+BB.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square+BB.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square+BB~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Board.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Board.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Board.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Board.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Board.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Board.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Board.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Board.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Board~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/BoardDelegate.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/BoardDelegate.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/BoardDelegate.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/BoardDelegate.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/BoardDelegate.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/BoardDelegate.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/BoardDelegate.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/BoardDelegate.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/BoardDelegate~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Clock.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Clock.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Clock.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Clock.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Clock.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Clock.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Clock.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Clock.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Clock~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Configuration.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Configuration.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Configuration.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Configuration.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Configuration.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Configuration.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Configuration.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Configuration.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Configuration~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Game.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Game.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Game.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Game.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Game.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Game.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Game.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Game.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Game~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Move.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Move.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Move.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Move.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Move.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Move.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Move.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Move.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Move~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/MoveTree/MoveTree+Collection.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Collection.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Collection.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Collection.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Collection.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Collection.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Collection.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Collection.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Collection~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/MoveTree/MoveTree+Deprecated.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Deprecated.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Deprecated.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Deprecated.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Deprecated.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Deprecated.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Deprecated.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Deprecated.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Deprecated~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/MoveTree/MoveTree+Index.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Index.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Index.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Index.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Index.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Index.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Index.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Index.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree+Index~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/MoveTree/MoveTree.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/MoveTree~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/EngineLANParser+Regex.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser+Regex.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser+Regex.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser+Regex.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser+Regex.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser+Regex.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser+Regex.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser+Regex.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser+Regex~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/EngineLANParser.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EngineLANParser~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/FENParser.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/FENParser.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/FENParser.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/FENParser.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/FENParser.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/FENParser.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/FENParser.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/FENParser.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/FENParser~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/PGNParser/PGNParser+Deprecated.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Deprecated.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Deprecated.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Deprecated.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Deprecated.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Deprecated.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Deprecated.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Deprecated.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Deprecated~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/PGNParser/PGNParser+MoveText.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+MoveText.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+MoveText.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+MoveText.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+MoveText.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+MoveText.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+MoveText.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+MoveText.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+MoveText~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/PGNParser/PGNParser+Tags.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Tags.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Tags.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Tags.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Tags.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Tags.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Tags.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Tags.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser+Tags~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/PGNParser/PGNParser.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/PGNParser~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/SANParser+Regex.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser+Regex.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser+Regex.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser+Regex.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser+Regex.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser+Regex.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser+Regex.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser+Regex.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser+Regex~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Parsers/SANParser.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/SANParser~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Piece.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Piece.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Piece.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Piece.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Piece.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Piece.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Piece.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Piece.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Piece~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Position.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Position.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Position.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Position.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Position.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Position.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Position.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Position.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Position~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Special Moves/Castling.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Castling.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Castling.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Castling.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Castling.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Castling.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Castling.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Castling.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Castling~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Special Moves/EnPassant.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EnPassant.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EnPassant.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EnPassant.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EnPassant.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EnPassant.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EnPassant.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EnPassant.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/EnPassant~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Square.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Square~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Utilities/Comparable+Bounded.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Comparable+Bounded.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Comparable+Bounded.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Comparable+Bounded.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Comparable+Bounded.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Comparable+Bounded.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Comparable+Bounded.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Comparable+Bounded.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Comparable+Bounded~partial.swiftmodule"
+  },
+  "/Users/mirko/Documents/dev/chesskit-swift/Sources/ChessKit/Utilities/Stack.swift" : {
+    "const-values" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Stack.swiftconstvalues",
+    "dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Stack.d",
+    "diagnostics" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Stack.dia",
+    "index-unit-output-path" : "/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Stack.o",
+    "llvm-bc" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Stack.bc",
+    "object" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Stack.o",
+    "swift-dependencies" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Stack.swiftdeps",
+    "swiftmodule" : "/Users/mirko/Documents/dev/chesskit-swift/build/ChessKit.build/Debug/ChessKit.build/Objects-normal/x86_64/Stack~partial.swiftmodule"
+  }
+}
