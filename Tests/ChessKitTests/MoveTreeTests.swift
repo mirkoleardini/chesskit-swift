@@ -102,4 +102,52 @@ extension MoveTreeTests {
     #expect(moveTree.nextIndex(for: .minimum) == i1)
   }
 
+  /// A branch must keep its own indices for its whole length.
+  ///
+  /// Every node of a line carries the line's variation number — `Index.previous`
+  /// and `next` walk by assuming it stays constant, and the PGN parser relies on
+  /// that to find a branch point — so a move added to a line cannot step aside if
+  /// it finds its index taken. Picking the number by testing only the branch's
+  /// FIRST index therefore let a long branch grow straight into indices another
+  /// line already owned; the dictionary is keyed by index, so the clash replaced
+  /// a live node and every later lookup resolved to the wrong move.
+  ///
+  /// The order below is what makes it bite: the branch further down the game is
+  /// added first and takes variation 1 around move 9, then the earlier branch —
+  /// whose own first index is free — must NOT also take variation 1, because it
+  /// grows into move 9 too.
+  @Test func branchKeepsItsIndicesForItsWholeLength() throws {
+    var game = try Game(
+      pgn: """
+        [Event "?"]
+        [Result "*"]
+
+        1. a3 a6 2. b3 b6 3. c3 c6 4. d3 d6 5. e3 e6 6. f3 f6 7. g3 g6 8. h3 h6
+        9. Ne2 Ne7 10. Nd2 Nd7 *
+        """
+    )
+    let last = try #require(game.moves.future(for: game.startingIndex).last)
+    let mainLine = game.moves.history(for: last)
+
+    func branch(fromPly ply: Int, _ moves: [String]) {
+      var from = mainLine[ply - 1]
+      for san in moves {
+        let index = game.make(move: san, from: from)
+        #expect(index != from, "\(san) should have been playable")
+        from = index
+      }
+    }
+
+    branch(fromPly: 16, ["Nd2", "Nd7", "Nc4", "Nc5", "Ne5", "Ne4"])
+    branch(fromPly: 8, ["Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6", "Ng1", "Ng8", "Nf3", "Nf6"])
+
+    let nodes = game.moves.pgnRepresentation.reduce(into: 0) { count, element in
+      if case .move = element { count += 1 }
+    }
+    #expect(Set(game.moves.indices).count == nodes, "two nodes share an index")
+
+    // A tree whose indices collide serialises to a game that no longer parses.
+    #expect(throws: Never.self) { try Game(pgn: game.pgn) }
+  }
+
 }

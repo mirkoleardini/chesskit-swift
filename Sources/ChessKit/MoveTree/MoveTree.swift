@@ -43,6 +43,11 @@ public struct MoveTree: Codable, Hashable, Sendable {
   /// - returns: The move index resulting from the addition of the move.
   ///
   @discardableResult
+  /// Orders indices along the game: move number, then colour.
+  private static func rank(_ index: Index) -> Int {
+    index.number * 2 + (index.color == .white ? 0 : 1)
+  }
+
   public mutating func add(
     move: Move,
     toParentIndex moveIndex: Index? = nil
@@ -72,7 +77,18 @@ public struct MoveTree: Codable, Hashable, Sendable {
       parent.next = newNode
     } else {
       parent.children.append(newNode)
-      while indices.contains(newIndex) {
+      // A branch must take a variation number that is free for the WHOLE span
+      // it may grow into, not merely at its first move. Every node of a line
+      // keeps the line's variation number — `Index.previous`/`next` walk by
+      // assuming it is constant, and the PGN parser relies on that to find a
+      // branch point — so a later move of this line has no way to step aside
+      // if it finds its cell taken. Testing only the first cell let a long
+      // branch walk straight into indices another line already owned, and
+      // since the dictionary is keyed by index, the clash silently replaced a
+      // live node.
+      while indices.contains(where: {
+        $0.variation == newIndex.variation && Self.rank($0) >= Self.rank(newIndex)
+      }) {
         newIndex.variation += 1
       }
     }
