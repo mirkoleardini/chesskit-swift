@@ -697,3 +697,86 @@ extension BoardTests {
   }
 
 }
+
+// MARK: - Skipping the state evaluation
+
+/// What `init(position:computingState: false)` gives up.
+///
+/// That parameter exists because `SANParser` builds a board per parsed move only
+/// to ask `canMove`, and deriving the state costs twenty times what that
+/// question does. These tests exist because the price is not obvious from the
+/// name: they are the warning on that initializer, written so that it fails
+/// instead of having to be re-read. Everything asserted here is DOCUMENTED
+/// behaviour, not a defect — what must not happen is somebody reaching for the
+/// fast initializer in a context where one of these matters and finding out
+/// afterwards.
+struct BoardSkippedStateTests {
+
+  @Test func theStateIsNotWorkedOut() throws {
+    // A position that IS checkmate — black to move, king on a8 with a7, b7 and
+    // b8 all covered. The public initializer says so; the fast one reports
+    // `.active`, because nothing has looked.
+    let mate = try #require(Position(fen: "k5R1/7R/8/8/8/8/K7/8 b - - 0 1"))
+
+    #expect(Board(position: mate).state == .checkmate(color: .black))
+    #expect(Board(position: mate, computingState: false).state == .active)
+  }
+
+  @Test func aPendingPromotionIsNotReported() throws {
+    // The same for the promotion state: a pawn sitting on the last rank is a
+    // position the board normally flags, and this one does not. The side to move
+    // has to be the pawn's own colour — that is the branch `updateState` looks
+    // at, the moment before the promotion is chosen.
+    let pawnOnTheEighth = try #require(Position(fen: "4P3/8/8/8/8/8/7k/K7 w - - 0 1"))
+
+    if case .promotion = Board(position: pawnOnTheEighth).state {} else {
+      Issue.record("expected the public initializer to report a pending promotion")
+    }
+    #expect(Board(position: pawnOnTheEighth, computingState: false).state == .active)
+  }
+
+  @Test func repetitionIsNoticedOneOccurrenceLate() {
+    // The trap worth a test rather than a sentence. The starting position is
+    // counted towards threefold repetition BY the state evaluation, so a board
+    // that skips it begins from zero and reads the third occurrence of a
+    // position as the second.
+    //
+    // Both boards play the same eight moves — knights out and back, twice —
+    // which brings the starting position up for the third time.
+    var counting = Board(position: .standard)
+    var notCounting = Board(position: .standard, computingState: false)
+
+    let shuffle: [(Square, Square)] = [
+      (.g1, .f3), (.g8, .f6), (.f3, .g1), (.f6, .g8),  // 2nd occurrence
+      (.g1, .f3), (.g8, .f6), (.f3, .g1), (.f6, .g8),  // 3rd occurrence
+    ]
+    for (start, end) in shuffle {
+      counting.move(pieceAt: start, to: end)
+      notCounting.move(pieceAt: start, to: end)
+    }
+
+    #expect(counting.state == .draw(reason: .repetition))
+    #expect(notCounting.state == .active)
+
+    // One more cycle and the second board catches up, which shows it is counting
+    // properly from where it started rather than not counting at all.
+    for (start, end) in shuffle.prefix(4) {
+      notCounting.move(pieceAt: start, to: end)
+    }
+    #expect(notCounting.state == .draw(reason: .repetition))
+  }
+
+  @Test func moveLegalityIsUnaffected() throws {
+    // The other half, and the reason the parameter is safe where it is used:
+    // what the board ANSWERS about moves does not change, because pins and check
+    // are worked out inside legal-move generation and never read from `state`.
+    // The e4 knight is pinned to its king by the rook on e8.
+    let pinned = try #require(Position(fen: "4r3/k7/8/8/4N1N1/8/8/4K3 w - - 0 1"))
+
+    for board in [Board(position: pinned), Board(position: pinned, computingState: false)] {
+      #expect(!board.canMove(pieceAt: .e4, to: .f6))
+      #expect(board.canMove(pieceAt: .g4, to: .f6))
+      #expect(board.legalMoves(forPieceAt: .e4).isEmpty)
+    }
+  }
+}

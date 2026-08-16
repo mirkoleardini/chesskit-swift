@@ -57,7 +57,10 @@ public enum SANParser {
     if let range = san.range(of: Pattern.pawnFile, options: .regularExpression), let end = targetSquare(for: san) {
       let startingFile = String(san[range])
 
-      let board = Board(position: position)
+      // `computingState: false`: the only thing asked of this board is `canMove`.
+      // Working out check/checkmate/stalemate means generating every legal move
+      // for a side, and it would be done once per move of every game parsed.
+      let board = Board(position: position, computingState: false)
       let possiblePiece = position.pieces
         .filter {
           $0.kind == .pawn && $0.color == color && $0.square.file == Square.File(rawValue: startingFile)
@@ -102,7 +105,10 @@ public enum SANParser {
     var move: Move?
     let disambiguation = self.disambiguation(for: san)
 
-    let board = Board(position: position)
+    // `computingState: false`: the only thing asked of this board is `canMove`.
+      // Working out check/checkmate/stalemate means generating every legal move
+      // for a side, and it would be done once per move of every game parsed.
+      let board = Board(position: position, computingState: false)
     let possiblePiece = position.pieces
       .filter { $0.kind == pieceKind && $0.color == color }
       .filter {
