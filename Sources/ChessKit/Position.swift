@@ -218,6 +218,76 @@ public struct Position: Codable, Sendable {
 
 }
 
+// MARK: - Position identity
+
+extension Position {
+
+  /// The castlings still available in this position, in the FEN sense:
+  /// "potential future castling", i.e. the king and the rook have not moved.
+  /// Whether the castling could be played right now — pieces in the way, squares
+  /// under attack — is a different question and does not affect these flags.
+  public struct CastlingRights: OptionSet, Hashable, Sendable {
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
+
+    public static let whiteKingside = CastlingRights(rawValue: 1 << 0)
+    public static let whiteQueenside = CastlingRights(rawValue: 1 << 1)
+    public static let blackKingside = CastlingRights(rawValue: 1 << 2)
+    public static let blackQueenside = CastlingRights(rawValue: 1 << 3)
+  }
+
+  /// The castlings still available to each side.
+  ///
+  /// Public because castling rights are part of a position's identity: two
+  /// otherwise identical positions, one where a side may still castle and one
+  /// where it may not, are different positions — they do not allow the same
+  /// moves. Anything hashing or comparing positions therefore needs this, and
+  /// until now it was reachable only through `fen`, which meant building a
+  /// string and parsing it back to read four bits.
+  public var castlingRights: CastlingRights {
+    var rights: CastlingRights = []
+    if legalCastlings.contains(.wK) { rights.insert(.whiteKingside) }
+    if legalCastlings.contains(.wQ) { rights.insert(.whiteQueenside) }
+    if legalCastlings.contains(.bK) { rights.insert(.blackKingside) }
+    if legalCastlings.contains(.bQ) { rights.insert(.blackQueenside) }
+    return rights
+  }
+
+  /// The square an en passant capture would move to — but only when a pawn of
+  /// the side to move actually stands beside the pawn that has just advanced
+  /// two squares. `nil` otherwise.
+  ///
+  /// This is deliberately NOT what `fen` reports. The FEN standard prints the
+  /// target square after every double pawn push, whether or not anybody can
+  /// capture there, and `FENParser` follows it. The consequence is that one
+  /// position gets two descriptions depending on how it was reached: after
+  /// `1.e4 e6 2.d4 d5` the field reads `d3`, after `1.d4 d5 2.e4 e6` it reads
+  /// `e3`, and the board is identical. Transpositions are lost exactly where
+  /// they most often occur, because the move that completes a transposition is
+  /// so frequently a double pawn push.
+  ///
+  /// The rule applied here is the one the Polyglot book format prescribes for
+  /// its position keys: count the en passant only when the opponent has just
+  /// double-pushed AND a pawn of the side to move stands next to it. Whether
+  /// that capture would actually be legal — the pawn may be pinned, or the push
+  /// may have been a discovered check — is deliberately not considered; neither
+  /// the FEN standard nor Polyglot considers it either.
+  ///
+  /// - note: This deliberately does NOT reuse `enPassantIsPossible`, which looks
+  /// like the same question and is not. That flag also runs the capture through
+  /// `validate(moveFor:to:)`, i.e. it asks whether the capture is *legal* — the
+  /// one thing the rule above says to ignore. It is also only maintained while
+  /// `Board` makes moves: on a position built straight from a FEN it degrades to
+  /// "there is an en passant square at all".
+  public var enPassantTarget: Square? {
+    guard let enPassant else { return nil }
+    let capturerIsWaiting = pieces.contains { piece in
+      piece.color == sideToMove && enPassant.couldBeCaptured(by: piece)
+    }
+    return capturerIsWaiting ? enPassant.captureSquare : nil
+  }
+}
+
 // MARK: - Assessment
 extension Position {
 
