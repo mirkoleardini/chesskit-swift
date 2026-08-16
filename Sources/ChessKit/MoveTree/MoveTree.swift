@@ -24,6 +24,21 @@ public struct MoveTree: Codable, Hashable, Sendable {
   /// The root node of the tree.
   private var root: Node?
 
+  /// Alternatives to the FIRST move — the variations that replace `root`.
+  ///
+  /// They need somewhere of their own because the tree hangs a variation off
+  /// the node it replaces: alternatives to a move M live in `M.previous.children`.
+  /// The first move has no `previous` — the starting position is not a move, so
+  /// it has no node — and there was therefore nowhere to put them. `add` fell
+  /// through to the root and made them a REPLY to the first move rather than an
+  /// alternative to it, silently, producing a PGN that could not be read back.
+  /// Every other move has a predecessor, which is why only move one was affected
+  /// and why nothing noticed for so long.
+  ///
+  /// Repertoire files are written exactly this way (`1. e4 (1. d4)`), so this is
+  /// not a corner: it is the shape of a whole feature.
+  private var rootAlternatives: [Node] = []
+
   /// A set containing the indices of all the moves stored in the tree.
   public var indices: [Index] {
     Array(dictionary.keys)
@@ -68,6 +83,15 @@ public struct MoveTree: Codable, Hashable, Sendable {
       return index
     }
 
+    // An alternative to the first move: it branches from the starting position,
+    // which has no node, so it hangs from the tree rather than from a parent.
+    if moveIndex == minimumIndex {
+      newNode.index = freeIndex(startingAt: minimumIndex.next)
+      rootAlternatives.append(newNode)
+      Self.nodeLock.withLock { dictionary[newNode.index] = newNode }
+      return newNode.index
+    }
+
     let parent = dictionary[moveIndex] ?? root
     newNode.previous = parent
 
@@ -86,11 +110,7 @@ public struct MoveTree: Codable, Hashable, Sendable {
       // branch walk straight into indices another line already owned, and
       // since the dictionary is keyed by index, the clash silently replaced a
       // live node.
-      while indices.contains(where: {
-        $0.variation == newIndex.variation && Self.rank($0) >= Self.rank(newIndex)
-      }) {
-        newIndex.variation += 1
-      }
+      newIndex = freeIndex(startingAt: newIndex)
     }
 
     Self.nodeLock.withLock {
@@ -107,6 +127,27 @@ public struct MoveTree: Codable, Hashable, Sendable {
 
   /// Returns the index matching `move` in the next or child moves of the
   /// move contained at `index`.
+  /// The first index at or after `start` whose variation number is free for the
+  /// whole span a line may grow into.
+  ///
+  /// A branch must take a number that is free for its WHOLE length, not merely
+  /// at its first move. Every node of a line keeps the line's variation number —
+  /// `Index.previous`/`next` walk by assuming it is constant, and the PGN parser
+  /// relies on that to find a branch point — so a later move of this line has no
+  /// way to step aside if it finds its cell taken. Testing only the first cell
+  /// let a long branch walk straight into indices another line already owned,
+  /// and since the dictionary is keyed by index, the clash silently replaced a
+  /// live node.
+  private func freeIndex(startingAt start: Index) -> Index {
+    var candidate = start
+    while indices.contains(where: {
+      $0.variation == candidate.variation && Self.rank($0) >= Self.rank(candidate)
+    }) {
+      candidate.variation += 1
+    }
+    return candidate
+  }
+
   public func nextIndex(containing move: Move, for index: Index) -> Index? {
     guard let node = dictionary[index] else {
       if index == minimumIndex, let root, root.move == move {
@@ -130,8 +171,11 @@ public struct MoveTree: Codable, Hashable, Sendable {
   /// branch chooser when stepping forward through a game.
   public func nextOptions(for index: Index) -> [Index] {
     guard let node = dictionary[index] else {
-      // From the starting position the first move is the tree root.
-      if index == minimumIndex, let root { return [root.index] }
+      // From the starting position the first move is the tree root — plus any
+      // alternative first moves, which branch from here and nowhere else.
+      if index == minimumIndex, let root {
+        return [root.index] + rootAlternatives.map(\.index)
+      }
       return []
     }
     var result: [Index] = []
@@ -386,6 +430,11 @@ public struct MoveTree: Codable, Hashable, Sendable {
       } else {
         previous.children.removeAll { $0 === node }
       }
+    } else if rootAlternatives.contains(where: { $0 === node }) {
+      // No `previous`, but not the root either: an alternative first move.
+      // Without this it would fall through and clear the root, taking the whole
+      // game with it.
+      rootAlternatives.removeAll { $0 === node }
     } else {
       root = nil
     }
@@ -460,7 +509,7 @@ public struct MoveTree: Codable, Hashable, Sendable {
     case variationEnd
   }
 
-  private func pgn(for node: Node?) -> [PGNElement] {
+  private func pgn(for node: Node?, withRootAlternatives: Bool = false) -> [PGNElement] {
     guard let node else { return [] }
     var result: [PGNElement] = []
 
@@ -474,6 +523,17 @@ public struct MoveTree: Codable, Hashable, Sendable {
     result.append(.move(node.move, node.index))
     for assessment in node.positionAssessments {
       result.append(.positionAssessment(assessment))
+    }
+
+    // Alternative first moves belong here, straight after the move they replace,
+    // which is both what PGN means by a variation and what reads back as one:
+    // `1. e4 (1. d4 d5) e5`.
+    if withRootAlternatives {
+      for alternative in rootAlternatives {
+        result.append(.variationStart)
+        result.append(contentsOf: pgn(for: alternative))
+        result.append(.variationEnd)
+      }
     }
 
     var iterator = node.next?.makeIterator()
@@ -511,7 +571,7 @@ public struct MoveTree: Codable, Hashable, Sendable {
   /// Returns the ``MoveTree`` as an array of PGN
   /// (Portable Game Format) elements.
   public var pgnRepresentation: [PGNElement] {
-    pgn(for: root)
+    pgn(for: root, withRootAlternatives: true)
   }
 
 }
