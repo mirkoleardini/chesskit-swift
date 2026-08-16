@@ -259,7 +259,12 @@ public struct Board: Sendable {
   /// a move has been made so the appropriate piece color can
   /// be used for check determination.
   private mutating func updateState(after move: Move? = nil) {
-    let moveColor = move?.piece.color ?? position.sideToMove
+    // `moveColor` is the side that has just moved, and everything below reads
+    // the position from the point of view of its opponent — the side to move.
+    // Without a `move` to ask, that is `sideToMove.opposite`, NOT `sideToMove`:
+    // taking the side to move looked at the wrong king, so a position set with
+    // `update(position:)` came back `.active` even at checkmate.
+    let moveColor = move?.piece.color ?? position.sideToMove.opposite
 
     // pawn promotion
     if let move {

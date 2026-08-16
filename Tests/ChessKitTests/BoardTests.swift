@@ -15,15 +15,40 @@ struct BoardTests {
 
     board.update(position: .complex)
     #expect(board.position == .complex)
-    #expect(board.state == .active)
+    // Black to move, and the knight on g7 is giving check from e8's point of
+    // view. This asserted `.active` while `updateState` judged the position by
+    // the wrong king; both sample positions below are checks too.
+    #expect(board.state == .check(color: .black))
 
     board.update(position: .test)
     board.update(position: .test)
     board.update(position: .test)
     #expect(board.position == .test)
+    // Repetition outranks the check on the white king (bishop f4 → g3).
     #expect(board.state == .draw(reason: .repetition))
 
     board.update(position: .test, resetPositionCounts: true)
+    #expect(board.state == .check(color: .white))
+  }
+
+  @Test func updatePositionReadsTerminalStates() {
+    // `update(position:)` has to judge the position from the point of view of
+    // the side to move — it has no `Move` to tell it who just played. It used
+    // to ask about the other king, so every position handed to it came back
+    // `.active`: an app that navigates a game by setting positions, rather than
+    // by making moves, could never tell that the game was over.
+
+    // Scholar's mate: Black is checkmated, and it is Black to move.
+    var board = Board()
+    board.update(position: Position(fen: "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4")!)
+    #expect(board.state == .checkmate(color: .black))
+
+    // Stalemate: Black to move and has no move.
+    board.update(position: Position(fen: "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1")!, resetPositionCounts: true)
+    #expect(board.state == .draw(reason: .stalemate))
+
+    // And a position with nothing to report stays active.
+    board.update(position: .standard, resetPositionCounts: true)
     #expect(board.state == .active)
   }
 
@@ -155,7 +180,11 @@ struct BoardTests {
     var board4 = Board(position: .init(fen: fen4)!)
 
     #expect(!board4.position.hasInsufficientMaterial)
-    #expect(board4.state == .check(color: .black))
+    // White to move, and the white king is not in check — so there is nothing
+    // to report, even though the black king happens to be attacked. `state`
+    // describes the side that has to find a move; this position simply could
+    // not arise with White to move.
+    #expect(board4.state == .active)
     board4.move(pieceAt: .a8, to: .b7)
     #expect(board4.position.hasInsufficientMaterial)
     #expect(board4.state == .draw(reason: .insufficientMaterial))
