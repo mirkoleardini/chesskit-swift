@@ -103,4 +103,59 @@ struct SANParserTests {
     #expect(SANParser.parse(move: "e44", in: .standard) == nil)
   }
 
+  // MARK: - King safety
+
+  // The parser builds its board with `computingState: false`, skipping the
+  // check/checkmate/stalemate evaluation. These pin down that this cannot make
+  // it accept or misread a move. Pins and check are worked out inside
+  // `legalMoves` — every pseudo-legal move is replayed on a test set and the
+  // king tested for attack — whereas `state` is a SUMMARY derived from that same
+  // machinery. The dependency runs one way only, and these fail loudly if it
+  // ever starts running the other.
+
+  @Test func aPinnedPieceCannotResolveAnAmbiguousMove() throws {
+    // Both knights reach f6, so `Nf6` looks ambiguous — but the e4 knight is
+    // pinned to its king by the rook on e8 and has no legal move at all, which
+    // is exactly why the SAN carries no disambiguation. The move must be the
+    // g4 knight's.
+    //
+    // This is the case that catches a parser blind to pins: it filters the
+    // candidates and takes the FIRST that can move, and the pinned knight on e4
+    // comes first in board order.
+    let position = try #require(Position(fen: "4r3/k7/8/8/4N1N1/8/8/4K3 w - - 0 1"))
+    let move = SANParser.parse(move: "Nf6", in: position)
+
+    #expect(move?.start == .g4)
+    #expect(move?.end == .f6)
+  }
+
+  @Test func aMoveThatLeavesTheKingInCheckIsRejected() throws {
+    // White is in check from the rook on e8. Pushing a pawn on the far side of
+    // the board is well-formed SAN for a move that cannot be played.
+    let position = try #require(Position(fen: "4r3/k7/8/8/8/8/P7/4K3 w - - 0 1"))
+
+    #expect(SANParser.parse(move: "a3", in: position) == nil)
+    #expect(SANParser.parse(move: "a4", in: position) == nil)
+  }
+
+  @Test func steppingOutOfCheckIsAccepted() throws {
+    // The other direction, so the test above cannot pass by refusing
+    // everything: from the same position the king may leave the checked file.
+    let position = try #require(Position(fen: "4r3/k7/8/8/8/8/P7/4K3 w - - 0 1"))
+    let move = SANParser.parse(move: "Kf1", in: position)
+
+    #expect(move?.start == .e1)
+    #expect(move?.end == .f1)
+  }
+
+  @Test func aKingCannotStepOntoAnAttackedSquare() throws {
+    // Legality with nothing to do with being in check right now: d1 and f1 are
+    // covered by the black rooks, so only e2 is available.
+    let position = try #require(Position(fen: "3r1r2/k7/8/8/8/8/8/4K3 w - - 0 1"))
+
+    #expect(SANParser.parse(move: "Kd1", in: position) == nil)
+    #expect(SANParser.parse(move: "Kf1", in: position) == nil)
+    #expect(SANParser.parse(move: "Ke2", in: position)?.end == .e2)
+  }
+
 }

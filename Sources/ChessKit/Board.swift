@@ -47,13 +47,43 @@ public struct Board: Sendable {
   /// for a standard chess game.
   ///
   public init(position: Position = .standard) {
+    self.init(position: position, computingState: true)
+  }
+
+  /// Initializes a board, optionally skipping the game-state evaluation.
+  ///
+  /// - parameter computingState: whether to work out `state` — check, checkmate,
+  /// stalemate, the draw rules — for the position just set. `true` is what the
+  /// public initializer does, and what every existing caller gets.
+  ///
+  /// `false` is for callers that only need the board to answer questions about
+  /// moves, `SANParser` above all. Deriving the state means generating every
+  /// legal move for a side, hashing the whole position and recording it for
+  /// repetition detection: measured at 29 µs, against 1.4 µs for the `canMove`
+  /// question the parser actually asks — and paid once per move of every game
+  /// parsed. Parsing a move does not need to know whether the position it starts
+  /// from is checkmate.
+  ///
+  /// - warning: with `false` the board's `state` stays `.active` until a piece
+  /// moves — including the `.promotion` state a position with a pawn waiting on
+  /// the last rank would otherwise report — and the starting position is NOT
+  /// counted towards threefold repetition, so a board that is then played on
+  /// would notice a repetition one occurrence late. Use it only for a board that
+  /// answers questions about moves and is not played on, which is what
+  /// `SANParser` does with it.
+  ///
+  /// (No delegate callback is lost by skipping this: `delegate` is assigned
+  /// after initialization, so it is always nil while an initializer runs.)
+  init(position: Position, computingState: Bool) {
     Attacks.create()
 
     state = .active
     positionHashCounts = [:]
     self.position = position
 
-    updateState()
+    if computingState {
+      updateState()
+    }
   }
 
   // MARK: Public
