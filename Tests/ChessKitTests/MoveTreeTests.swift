@@ -150,4 +150,88 @@ extension MoveTreeTests {
     #expect(throws: Never.self) { try Game(pgn: game.pgn) }
   }
 
+  /// The number of half-moves on the main line, walked with `nextOptions` —
+  /// which, unlike `future(for:)`, includes the first move.
+  private func mainLineLength(of game: Game) -> Int {
+    var count = 0
+    var index = game.startingIndex
+    while let next = game.moves.nextOptions(for: index).first {
+      count += 1
+      index = next
+    }
+    return count
+  }
+
+  // MARK: - Alternatives to the first move
+
+  // A variation on move ONE had nowhere to live. The tree hangs alternatives to
+  // a move M off `M.previous.children`, and the first move has no previous —
+  // the starting position is not a move, so it has no node — so `add` fell
+  // through to `?? root` and made the alternative a REPLY to the first move
+  // instead. Silently: the game then serialised to movetext that could not be
+  // parsed back, so a game saved (or imported) that way was lost.
+  //
+  // Every move after the first has a predecessor, which is why nothing noticed.
+  // Repertoire PGNs are written exactly this way — `1. e4 (1. d4)` — so it is
+  // the shape of a whole feature, not a corner.
+
+  @Test func alternativeFirstMoveIsOfferedFromTheStart() {
+    var game = Game()
+    let e4 = game.make(move: "e4", from: .minimum)
+    let d4 = game.make(move: "d4", from: .minimum)
+
+    #expect(e4 != d4, "the two first moves must not share an index")
+    #expect(Set(game.moves.nextOptions(for: .minimum)) == Set([e4, d4]))
+  }
+
+  @Test func alternativeFirstMoveSurvivesAPGNRoundTrip() throws {
+    var game = Game()
+    _ = game.make(move: "e4", from: .minimum)
+    let d4 = game.make(move: "d4", from: .minimum)
+    _ = game.make(move: "d5", from: d4)
+
+    // Written as PGN means it, and reads back as the same shape.
+    #expect(game.pgn.contains("(1. d4 d5)"), "written as: \(game.pgn)")
+
+    let reread = try Game(pgn: game.pgn)
+    #expect(reread.moves.nextOptions(for: reread.startingIndex).count == 2)
+  }
+
+  @Test func aParsedFirstMoveVariationKeepsTheMainLine() throws {
+    // The import route to the same hole: the main line used to come back as
+    // `1. e4 d4` — the alternative read as Black's reply — with the real
+    // continuation demoted to a variation.
+    let game = try Game(pgn: "[Event \"?\"]\n\n1. e4 (1. d4 d5) e5 2. Nf3 *")
+
+    #expect(mainLineLength(of: game) == 3)
+    #expect(game.moves.nextOptions(for: game.startingIndex).count == 2)
+    #expect(throws: Never.self) { try Game(pgn: game.pgn) }
+  }
+
+  @Test func removingAnAlternativeFirstMoveLeavesTheGame() throws {
+    // It has no `previous`, like the root, and `remove` used to read that as
+    // "this is the root" and clear the whole tree.
+    var game = Game()
+    _ = game.make(move: "e4", from: .minimum)
+    let d4 = game.make(move: "d4", from: .minimum)
+
+    let removed = game.removeMove(at: d4)
+    #expect(removed)
+    #expect(game.moves.nextOptions(for: .minimum).count == 1)
+    #expect(mainLineLength(of: game) == 1)
+  }
+
+  @Test func threeAlternativeFirstMovesAllFit() throws {
+    // Each needs a variation number free for its whole length, exactly as a
+    // branch deeper in the tree does (Bug 13).
+    var game = Game()
+    for san in ["e4", "d4", "c4", "Nf3"] {
+      _ = game.make(move: san, from: .minimum)
+    }
+
+    #expect(game.moves.nextOptions(for: .minimum).count == 4)
+    #expect(Set(game.moves.indices).count == 4, "two nodes share an index")
+    #expect(throws: Never.self) { try Game(pgn: game.pgn) }
+  }
+
 }
