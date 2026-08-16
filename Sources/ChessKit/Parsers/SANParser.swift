@@ -61,14 +61,17 @@ public enum SANParser {
       // Working out check/checkmate/stalemate means generating every legal move
       // for a side, and it would be done once per move of every game parsed.
       let board = Board(position: position, computingState: false)
-      let possiblePiece = position.pieces
-        .filter {
-          $0.kind == .pawn && $0.color == color && $0.square.file == Square.File(rawValue: startingFile)
-        }
-        .filter {
-          board.canMove(pieceAt: $0.square, to: end)
-        }
-        .first
+
+      // One pass, no intermediate arrays: the chained `filter`s each built a
+      // throwaway array of pieces so that one element could be taken from the
+      // last. `&&` short-circuits, so `canMove` — the dear one, at over a
+      // microsecond — is asked only about pawns already on the right file, and
+      // the file is parsed once rather than once per piece on the board.
+      let file = Square.File(rawValue: startingFile)
+      let possiblePiece = position.pieces.first { piece in
+        piece.kind == .pawn && piece.color == color && piece.square.file == file
+          && board.canMove(pieceAt: piece.square, to: end)
+      }
 
       guard var pawn = possiblePiece else {
         return nil
@@ -106,27 +109,34 @@ public enum SANParser {
     let disambiguation = self.disambiguation(for: san)
 
     // `computingState: false`: the only thing asked of this board is `canMove`.
-      // Working out check/checkmate/stalemate means generating every legal move
-      // for a side, and it would be done once per move of every game parsed.
-      let board = Board(position: position, computingState: false)
-    let possiblePiece = position.pieces
-      .filter { $0.kind == pieceKind && $0.color == color }
-      .filter {
-        board.canMove(pieceAt: $0.square, to: end)
-      }
-      .filter {
+    // Working out check/checkmate/stalemate means generating every legal move
+    // for a side, and it would be done once per move of every game parsed.
+    let board = Board(position: position, computingState: false)
+
+    // One pass, no intermediate arrays. The three chained `filter`s built three
+    // throwaway arrays of pieces to take one element from the last, and asked
+    // `canMove` about every piece of the kind BEFORE the disambiguation was
+    // consulted — so a rook move named by its file still cost a legality search
+    // for the other rook. Here the cheap tests come first and the dear one runs
+    // only for what survives them.
+    //
+    // The piece chosen cannot change: the three tests are pure, so the first
+    // piece satisfying all of them is the same piece whatever order they are
+    // asked in.
+    let possiblePiece = position.pieces.first { piece in
+      guard piece.kind == pieceKind, piece.color == color else { return false }
+
+      let matchesDisambiguation =
         switch disambiguation {
-        case let .byFile(file):
-          $0.square.file == file
-        case let .byRank(rank):
-          $0.square.rank == rank
-        case let .bySquare(square):
-          $0.square == square
-        case .none:
-          true
+        case let .byFile(file): piece.square.file == file
+        case let .byRank(rank): piece.square.rank == rank
+        case let .bySquare(square): piece.square == square
+        case .none: true
         }
-      }
-      .first
+      guard matchesDisambiguation else { return false }
+
+      return board.canMove(pieceAt: piece.square, to: end)
+    }
 
     guard var piece = possiblePiece else {
       return nil
