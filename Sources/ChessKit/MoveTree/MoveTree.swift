@@ -148,13 +148,19 @@ public struct MoveTree: Codable, Hashable, Sendable {
     return candidate
   }
 
+  /// The index of `move` if it already follows `index`, or nil.
+  ///
+  /// `Game.make` asks this before adding, so that replaying a move that is
+  /// already in the tree walks into it instead of forking an identical line.
+  /// The starting position needs its own answer twice over: the first move is
+  /// the root rather than a child, and alternatives to it live in
+  /// `rootAlternatives` rather than under a parent — looking only at the root
+  /// meant the same alternative first move was added afresh on every replay.
   public func nextIndex(containing move: Move, for index: Index) -> Index? {
     guard let node = dictionary[index] else {
-      if index == minimumIndex, let root, root.move == move {
-        return root.index
-      } else {
-        return nil
-      }
+      guard index == minimumIndex, let root else { return nil }
+      if root.move == move { return root.index }
+      return rootAlternatives.first { $0.move == move }?.index
     }
 
     if let next = node.next, next.move == move {
