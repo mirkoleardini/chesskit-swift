@@ -184,6 +184,31 @@ extension MoveTreeTests {
     #expect(Set(game.moves.nextOptions(for: .minimum)) == Set([e4, d4]))
   }
 
+  @Test func replayingAnAlternativeFirstMoveReusesIt() {
+    // The other half of the same hole, found in the app (ago 2026): giving the
+    // alternative somewhere to LIVE was not enough — the lookup that FINDS it
+    // was left behind. `make` asks `nextIndex(containing:for:)` whether the
+    // move is already there and only adds when it is not, but at the starting
+    // position that function looked at the root and nothing else. So playing
+    // d4 from the start a second time answered "not there" and added it again:
+    // in the app, clicking the same move in the opening explorer three times
+    // produced three identical `(1. d4)` variations.
+    var game = Game()
+    _ = game.make(move: "e4", from: .minimum)
+    let first = game.make(move: "d4", from: .minimum)
+    let again = game.make(move: "d4", from: .minimum)
+
+    #expect(first == again, "the same alternative first move must not be added twice")
+    #expect(game.moves.nextOptions(for: .minimum).count == 2)
+  }
+
+  @Test func replayingTheFirstMoveOfTheMainLineStillReusesIt() {
+    // The half that already worked, kept honest beside the one that did not.
+    var game = Game()
+    let e4 = game.make(move: "e4", from: .minimum)
+    #expect(game.make(move: "e4", from: .minimum) == e4)
+  }
+
   @Test func alternativeFirstMoveSurvivesAPGNRoundTrip() throws {
     var game = Game()
     _ = game.make(move: "e4", from: .minimum)
