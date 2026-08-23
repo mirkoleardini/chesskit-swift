@@ -23,27 +23,20 @@ public enum SANParser {
     move san: String,
     in position: Position
   ) -> Move? {
-    guard isValid(san: san) else { return nil }
+    // ONE PASS over the string, in place of the seven to ten regular
+    // expressions that used to ask the same handful of ASCII characters one
+    // question each (`SANParser+Components.swift`, and the measurement that
+    // prompted it). A nil here is `isValid(san:)` answering false: the parse and
+    // the validity test are now the same walk, so a string can no longer be
+    // admitted by one rule and read by another.
+    guard let parts = Components(san) else { return nil }
 
     let color = position.sideToMove
-    var checkState = Move.CheckState.none
-
-    if san.contains("#") {
-      checkState = .checkmate
-    } else if san.contains("+") {
-      checkState = .check
-    }
+    let checkState = parts.checkState
 
     // castling
-    var castling: Castling?
-
-    if san.range(of: Pattern.shortCastle, options: .regularExpression) != nil {
-      castling = Castling(side: .king, color: color)
-    } else if san.range(of: Pattern.longCastle, options: .regularExpression) != nil {
-      castling = Castling(side: .queen, color: color)
-    }
-
-    if let castling {
+    if let side = parts.castle {
+      let castling = Castling(side: side, color: color)
       return Move(
         result: .castle(castling),
         piece: Piece(.king, color: color, square: castling.kingStart),
@@ -53,10 +46,11 @@ public enum SANParser {
       )
     }
 
-    // pawns
-    if let range = san.range(of: Pattern.pawnFile, options: .regularExpression), let end = targetSquare(for: san) {
-      let startingFile = String(san[range])
+    // Everything that is not a castle names the square it goes to.
+    guard let end = parts.target else { return nil }
 
+    // pawns
+    if let file = parts.pawnStartingFile {
       // `computingState: false`: the only thing asked of this board is `canMove`.
       // Working out check/checkmate/stalemate means generating every legal move
       // for a side, and it would be done once per move of every game parsed.
@@ -67,7 +61,6 @@ public enum SANParser {
       // last. `&&` short-circuits, so `canMove` — the dear one, at over a
       // microsecond — is asked only about pawns already on the right file, and
       // the file is parsed once rather than once per piece on the board.
-      let file = Square.File(rawValue: startingFile)
       let possiblePiece = position.pieces.first { piece in
         piece.kind == .pawn && piece.color == color && piece.square.file == file
           && board.canMove(pieceAt: piece.square, to: end)
@@ -82,7 +75,7 @@ public enum SANParser {
 
       var move: Move?
 
-      if isCapture(san: san) {
+      if parts.isCapture {
         if let capturedPiece = position.piece(at: end) {
           move = Move(result: .capture(capturedPiece), piece: pawn, start: start, end: capturedPiece.square, checkState: checkState)
         } else if let ep = position.enPassant, ep.captureSquare == end {
@@ -92,7 +85,7 @@ public enum SANParser {
         move = Move(result: .move, piece: pawn, start: start, end: end, checkState: checkState)
       }
 
-      if let promotionPieceKind = promotionPiece(for: san) {
+      if let promotionPieceKind = parts.promotion {
         move?.promotedPiece = Piece(promotionPieceKind, color: color, square: end)
       }
 
@@ -100,13 +93,10 @@ public enum SANParser {
     }
 
     // pieces
-    guard let range = san.range(of: Pattern.pieceKind, options: .regularExpression),
-      let pieceKind = Piece.Kind(rawValue: String(san[range])),
-      let end = targetSquare(for: san)
-    else { return nil }
+    guard let pieceKind = parts.pieceKind else { return nil }
 
     var move: Move?
-    let disambiguation = self.disambiguation(for: san)
+    let disambiguation = parts.disambiguation
 
     // `computingState: false`: the only thing asked of this board is `canMove`.
     // Working out check/checkmate/stalemate means generating every legal move
@@ -145,7 +135,7 @@ public enum SANParser {
     let start = piece.square
     piece.square = end
 
-    if isCapture(san: san), let capturedPiece = position.piece(at: end) {
+    if parts.isCapture, let capturedPiece = position.piece(at: end) {
       move = Move(result: .capture(capturedPiece), piece: piece, start: start, end: end, checkState: checkState)
     } else {
       move = Move(result: .move, piece: piece, start: start, end: end, checkState: checkState)
@@ -200,82 +190,16 @@ public enum SANParser {
 
   // MARK: Private
 
-  /// Returns whether the provided SAN is valid.
-  ///
-  /// - parameter san: The SAN string to check.
-  /// - returns: Whether the SAN is valid.
-  ///
-  private static func isValid(san: String) -> Bool {
-    san.range(of: SANParser.Pattern.full, options: .regularExpression) != nil
-  }
-
-  /// Returns the target square for a SAN move.
-  ///
-  /// - parameter san: The SAN represenation of a move.
-  /// - returns: The square the move is targeting, or `nil`
-  ///     if the SAN is invalid.
-  ///
-  private static func targetSquare(for san: String) -> Square? {
-    guard
-      let range = san.range(
-        of: Pattern.targetSquare,
-        options: .regularExpression
-      )
-    else { return nil }
-
-    return Square(String(san[range]))
-  }
-
-  /// Checks if a SAN string contains a capture.
-  ///
-  /// - parameter san: The SAN represenation of a move.
-  /// - returns: Whether or not the move represents a capture.
-  ///
-  private static func isCapture(san: String) -> Bool {
-    san.contains("x")
-  }
-
-  /// Checks if a SAN string contains a promotion.
-  ///
-  /// - parameter san: The SAN represenation of a move.
-  /// - returns: The kind of piece that is being promoted to,
-  ///     or `nil` if the SAN does not contain a promotion.
-  ///
-  private static func promotionPiece(for san: String) -> Piece.Kind? {
-    guard let range = san.range(of: Pattern.promotion, options: .regularExpression) else {
-      return nil
-    }
-
-    return Piece.Kind(
-      rawValue: san[range].replacingOccurrences(of: "=", with: "")
-    )
-  }
-
-  /// Checks if a SAN string contains a disambiguation.
-  ///
-  /// - parameter san: The SAN represenation of a move.
-  /// - returns: The disambiguation contained within the SAN,
-  ///     or `nil` if there is none.
-  ///
-  /// If multiple pieces of the same type can move to the target
-  /// square, the SAN contains a disambiguating file, rank, or square
-  /// so the piece that is moving can be determined.
-  private static func disambiguation(for san: String) -> Move.Disambiguation? {
-    guard let range = san.range(of: Pattern.disambiguation, options: .regularExpression) else {
-      return nil
-    }
-
-    let value = String(san[range])
-
-    if let rankRange = value.range(of: Pattern.rank, options: .regularExpression), let rank = Int(String(value[rankRange])) {
-      return .byRank(Square.Rank(rank))
-    } else if let fileRange = value.range(of: Pattern.file, options: .regularExpression), let file = Square.File(rawValue: String(value[fileRange])) {
-      return .byFile(file)
-    } else if let squareRange = value.range(of: Pattern.square, options: .regularExpression) {
-      return .bySquare(Square(String(value[squareRange])))
-    } else {
-      return nil
-    }
-  }
+  // The five private helpers that used to live here — `isValid(san:)`,
+  // `targetSquare(for:)`, `isCapture(san:)`, `promotionPiece(for:)` and
+  // `disambiguation(for:)` — were each one regular expression over the same
+  // seven characters, and `Components` now answers all five in a single pass.
+  //
+  // They have not simply been dropped: they are kept VERBATIM in
+  // `SANParserComponentsTests` as the reference implementation, and every
+  // string the grammar can produce is put through both. That is what turns
+  // "the new one should behave the same" into something the suite checks. The
+  // `Pattern` struct stays for the same reason — nothing in the parser reads it
+  // any more, but the test that guards the parser does.
 
 }
