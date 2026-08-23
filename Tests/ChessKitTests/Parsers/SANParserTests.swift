@@ -91,6 +91,38 @@ struct SANParserTests {
     #expect(queenMove?.checkState == Move.CheckState.none)
   }
 
+  /// A capture named by the full starting square — `Qh4xe1`.
+  ///
+  /// ⚠️ THIS DID NOT PARSE AT ALL before the regular expressions came out of
+  /// `SANParser` (Bug 17 in `chesskit-fixes.md`). `Pattern.targetSquare` was
+  /// `([a-h][1-8])(?!([a-h][1-8]))` — "a square not immediately followed by
+  /// another square" — and the `x` sits between the two squares, so the
+  /// negative lookahead was satisfied by the FIRST one: the parser read `h4` as
+  /// the destination, asked whether the queen on h4 could move to h4, and
+  /// returned nil. A legal move, of the kind ChessBase writes, silently
+  /// unreadable.
+  ///
+  /// Without the capture — `Qh4e1`, the case just above — the two squares are
+  /// adjacent, the lookahead did its job, and it worked. That is why it went
+  /// unnoticed for so long.
+  @Test func fullSquareDisambiguationOnACapture() {
+    // Three white queens (e4, h4, h1) can all take on e1: h4 shares its file
+    // with h1 and its rank with e4, so neither half alone names it.
+    let p = Position(fen: "3r3r/8/8/R7/4Q2Q/8/8/R3n2Q w - - 0 1")!
+
+    let capture = SANParser.parse(move: "Qh4xe1", in: p)
+    #expect(capture?.piece.kind == .queen)
+    #expect(capture?.disambiguation == .bySquare(.h4))
+    #expect(capture?.start == .h4)
+    #expect(capture?.end == .e1)
+    #expect(capture?.result == .capture(.init(.knight, color: .black, square: .e1)))
+
+    // The other two, so the disambiguation is shown to be doing the choosing
+    // rather than the first queen in the list happening to be the right one.
+    #expect(SANParser.parse(move: "Qe4xe1", in: p)?.start == .e4)
+    #expect(SANParser.parse(move: "Qh1xe1", in: p)?.start == .h1)
+  }
+
   @Test func testValidSANButInvalidMove() {
     #expect(SANParser.parse(move: "axb5", in: .standard) == nil)
     #expect(SANParser.parse(move: "Bb5", in: .standard) == nil)
