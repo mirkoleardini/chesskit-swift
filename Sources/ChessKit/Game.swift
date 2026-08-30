@@ -203,6 +203,28 @@ public struct Game: Codable, Hashable, Sendable {
     moves.annotate(moveAt: index, assessment: assessment, comment: comment)
   }
 
+  /// Sets the comment of the move at `index`, leaving its assessment alone.
+  ///
+  /// Use this instead of ``annotate(moveAt:assessment:comment:)`` when only the
+  /// comment is changing: `annotate` writes both fields at once, so through it a
+  /// comment change has to carry the current assessment along or wipe it.
+  public mutating func setComment(
+    _ comment: String,
+    at index: MoveTree.Index
+  ) {
+    moves.setComment(comment, at: index)
+  }
+
+  /// Sets the assessment of the move at `index`, leaving its comment alone.
+  ///
+  /// The other half of ``setComment(_:at:)``.
+  public mutating func setAssessment(
+    _ assessment: Move.Assessment,
+    at index: MoveTree.Index
+  ) {
+    moves.setAssessment(assessment, at: index)
+  }
+
   /// Sets a pre-move comment (rendered *before* the move) for the move at
   /// the provided `index`, leaving its other annotations untouched.
   public mutating func setCommentBefore(

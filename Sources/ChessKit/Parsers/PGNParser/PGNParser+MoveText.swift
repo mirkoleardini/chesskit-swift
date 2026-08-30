@@ -216,7 +216,7 @@ extension PGNParser {
           }
 
           if let moveAssessment {
-            setAssessment(moveAssessment, at: currentMoveIndex, in: &game)
+            game.setAssessment(moveAssessment, at: currentMoveIndex)
           } else {
             throw .invalidAnnotation(annotation)
           }
@@ -224,7 +224,7 @@ extension PGNParser {
           if awaitingVariationFirstMove {
             pendingVariationComment = pendingVariationComment.map { $0 + " " + comment } ?? comment
           } else {
-            setComment(comment, at: currentMoveIndex, in: &game)
+            game.setComment(comment, at: currentMoveIndex)
           }
         case .variationStart:
           variationStack.push(currentMoveIndex)
@@ -242,28 +242,6 @@ extension PGNParser {
       }
 
       return game
-    }
-
-    /// Sets a move's comment without clearing its existing assessment.
-    /// `Game.annotate` writes both fields at once, so a plain comment call
-    /// would wipe a NAG set earlier (e.g. `Nd1 $2 {comment}` losing `$2`).
-    private static func setComment(
-      _ comment: String,
-      at index: MoveTree.Index,
-      in game: inout Game
-    ) {
-      let assessment = game.moves.dictionary[index]?.move.assessment ?? .null
-      game.annotate(moveAt: index, assessment: assessment, comment: comment)
-    }
-
-    /// Sets a move's assessment without clearing its existing comment.
-    private static func setAssessment(
-      _ assessment: Move.Assessment,
-      at index: MoveTree.Index,
-      in game: inout Game
-    ) {
-      let comment = game.moves.dictionary[index]?.move.comment ?? ""
-      game.annotate(moveAt: index, assessment: assessment, comment: comment)
     }
 
     private static func firstMatch(in string: String, for pattern: Pattern) -> String? {
