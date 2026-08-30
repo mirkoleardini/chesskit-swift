@@ -116,6 +116,58 @@ final class GameTests {
     #expect(moveText == expectedMoveText)
   }
 
+  // MARK: Setting one annotation field without clearing the other
+
+  /// `setComment` leaves the move's assessment where it was.
+  ///
+  /// This is the half of `annotate` that every caller had to write for itself:
+  /// read the assessment, then hand it back to `annotate` along with the new
+  /// comment. Forgetting the first step drops the NAG in silence.
+  @Test func setCommentKeepsTheAssessment() {
+    game.annotate(moveAt: nf3Index, assessment: .brilliant, comment: "first")
+
+    game.setComment("second", at: nf3Index)
+
+    #expect(game.moves[nf3Index]?.comment == "second")
+    #expect(game.moves[nf3Index]?.assessment == .brilliant)
+  }
+
+  /// `setAssessment` leaves the move's comment where it was.
+  @Test func setAssessmentKeepsTheComment() {
+    game.annotate(moveAt: nf3Index, assessment: .brilliant, comment: "note")
+
+    game.setAssessment(.blunder, at: nf3Index)
+
+    #expect(game.moves[nf3Index]?.assessment == .blunder)
+    #expect(game.moves[nf3Index]?.comment == "note")
+  }
+
+  /// `annotate` still writes BOTH fields, defaults included.
+  ///
+  /// ⚠️ This is what makes the two tests above mean something, and it is also
+  /// the contract that must not move: `annotate` is the "set both" call, and an
+  /// omitted argument really does clear the stored value. If this ever started
+  /// preserving the other field, the two functions above would be measuring
+  /// nothing.
+  @Test func annotateStillOverwritesBothFields() {
+    game.annotate(moveAt: nf3Index, assessment: .brilliant, comment: "note")
+
+    game.annotate(moveAt: nf3Index, comment: "only the comment")
+
+    #expect(game.moves[nf3Index]?.comment == "only the comment")
+    #expect(game.moves[nf3Index]?.assessment == .null)
+  }
+
+  /// Neither setter minds an index that holds no move.
+  @Test func settingAnnotationsOnAnIndexWithNoMove() {
+    let absent = MoveTree.Index(number: 99, color: .white, variation: 42)
+
+    game.setComment("nowhere", at: absent)
+    game.setAssessment(.blunder, at: absent)
+
+    #expect(game.moves[absent] == nil)
+  }
+
   @Test func positionAnnotation() {
     game.annotate(positionAt: nc3Index, assessment: .whiteHasCrushingAdvantage)
     game.annotate(positionAt: bc4Index, assessment: .whiteHasModerateTimeAdvantage)

@@ -352,6 +352,35 @@ public struct MoveTree: Codable, Hashable, Sendable {
     return dictionary[index]?.move
   }
 
+  /// Sets the comment of the move at `index`, leaving its assessment alone.
+  ///
+  /// ``annotate(moveAt:assessment:comment:)`` writes BOTH fields on every call —
+  /// an omitted argument falls back to its default and wipes what was stored —
+  /// so changing one field through it means reading the other and writing it
+  /// back. Every caller that got that dance wrong dropped a NAG or a comment in
+  /// silence, which is what the PGN parser's own `Nd1 $2 {comment}` defect was.
+  ///
+  /// A separate name rather than an overload of `annotate`: an overload taking
+  /// only `comment:` would also capture existing two-argument calls to the
+  /// three-argument form, silently changing them from "set this and clear the
+  /// other" to "set this and keep the other".
+  public mutating func setComment(_ comment: String, at index: Index) {
+    Self.nodeLock.withLock {
+      dictionary[index]?.move.comment = comment
+    }
+  }
+
+  /// Sets the assessment of the move at `index`, leaving its comment alone.
+  ///
+  /// The other half of ``setComment(_:at:)``; see it for why these two exist
+  /// beside ``annotate(moveAt:assessment:comment:)`` rather than as overloads
+  /// of it.
+  public mutating func setAssessment(_ assessment: Move.Assessment, at index: Index) {
+    Self.nodeLock.withLock {
+      dictionary[index]?.move.assessment = assessment
+    }
+  }
+
   /// Sets a pre-move comment (rendered *before* the move) for the move at
   /// the provided `index`, without touching its other annotations.
   ///
