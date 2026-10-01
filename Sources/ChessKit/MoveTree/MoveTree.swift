@@ -48,6 +48,16 @@ public struct MoveTree: Codable, Hashable, Sendable {
   /// to ensure `Sendable` conformance for ``Node``.
   private static let nodeLock = NSLock()
 
+  /// Orders indices along the game: move number, then colour.
+  ///
+  /// ⚠️ Kept ABOVE `add(move:toParentIndex:)`'s documentation, not between it
+  /// and the function: when it was inserted there, `@discardableResult` and
+  /// the doc comment attached to this helper instead, and `add` silently lost
+  /// both — every caller that ignores the index got a warning.
+  private static func rank(_ index: Index) -> Int {
+    index.number * 2 + (index.color == .white ? 0 : 1)
+  }
+
   /// Adds a move to the move tree.
   ///
   /// - parameter move: The move to add to the tree.
@@ -58,11 +68,6 @@ public struct MoveTree: Codable, Hashable, Sendable {
   /// - returns: The move index resulting from the addition of the move.
   ///
   @discardableResult
-  /// Orders indices along the game: move number, then colour.
-  private static func rank(_ index: Index) -> Int {
-    index.number * 2 + (index.color == .white ? 0 : 1)
-  }
-
   public mutating func add(
     move: Move,
     toParentIndex moveIndex: Index? = nil

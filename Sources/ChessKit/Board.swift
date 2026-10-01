@@ -14,7 +14,70 @@ public struct Board: Sendable {
   /// Used to communicate certain events as
   /// the ``position`` changes.
   @available(*, deprecated, message: "Monitor `state` property of `Board` instead.")
-  public weak var delegate: BoardDelegate?
+  public var delegate: BoardDelegate? {
+    get { _delegate?.object as? BoardDelegate }
+    set { _delegate = newValue.map(DelegateForwarder.init) }
+  }
+
+  /// Where ``delegate`` is actually held, and what the board itself calls.
+  ///
+  /// ⚠️ The deprecation is for CALLERS: it tells them to watch `state`. The
+  /// board still has to notify whoever did set a delegate — and every line
+  /// that names `BoardDelegate` outside a deprecated declaration is a warning
+  /// no caller can act on (there were eight on every build). So the type is
+  /// named only inside deprecated code: the setter above wraps the delegate
+  /// in a forwarder, and the board calls the forwarder. Same weak reference,
+  /// same four callbacks, same moments.
+  private var _delegate: DelegateForwarder?
+
+  /// The four `BoardDelegate` callbacks, captured once when a delegate is set.
+  private struct DelegateForwarder: Sendable {
+    /// The delegate itself, held weakly as the old property held it, and
+    /// returned by the getter.
+    weak var object: (any AnyObject & Sendable)?
+    let willPromote: @Sendable (Move) -> Void
+    let didPromote: @Sendable (Move) -> Void
+    let didCheckKing: @Sendable (Piece.Color) -> Void
+    /// Takes the `state` the board has just reached, not an `EndResult`:
+    /// that type is deprecated too, and is built only below, inside the
+    /// deprecated initializer, where naming it costs nothing.
+    let didEnd: @Sendable (State) -> Void
+
+    @available(*, deprecated, message: "Monitor `state` property of `Board` instead.")
+    init(_ delegate: BoardDelegate) {
+      object = delegate
+      willPromote = { [weak delegate] in delegate?.willPromote(with: $0) }
+      didPromote = { [weak delegate] in delegate?.didPromote(with: $0) }
+      didCheckKing = { [weak delegate] in delegate?.didCheckKing(ofColor: $0) }
+      didEnd = { [weak delegate] state in
+        guard let result = Self.endResult(for: state) else { return }
+        delegate?.didEnd(with: result)
+      }
+    }
+
+    /// The old `EndResult` for a state that ends the game, or nil for one that
+    /// does not. The two draw enums have the same cases under the same raw
+    /// values; the switch spells them out so a case added to one and not the
+    /// other is a compile error, not a dropped callback.
+    @available(*, deprecated, message: "Monitor `state` property of `Board` instead.")
+    private static func endResult(for state: State) -> EndResult? {
+      switch state {
+      case .checkmate(let color):
+        // `color` is the side that IS mated; the result names the winner.
+        return .win(color.opposite)
+      case .draw(let reason):
+        switch reason {
+        case .agreement: return .draw(.agreement)
+        case .fiftyMoves: return .draw(.fiftyMoves)
+        case .insufficientMaterial: return .draw(.insufficientMaterial)
+        case .repetition: return .draw(.repetition)
+        case .stalemate: return .draw(.stalemate)
+        }
+      case .active, .promotion, .check:
+        return nil
+      }
+    }
+  }
 
   /// The current position represented on the board.
   ///
@@ -302,12 +365,12 @@ public struct Board: Sendable {
         if (move.end.rank == 8 && move.piece.color == .white) || (move.end.rank == 1 && move.piece.color == .black) {
           if move.promotedPiece == nil {
             state = .promotion(move: move)
-            delegate?.willPromote(with: move)
+            _delegate?.willPromote(move)
             // prevent any more state changes until promotion is completed,
             // as the board is in an "incomplete" state
             return
           } else {
-            delegate?.didPromote(with: move)
+            _delegate?.didPromote(move)
           }
         }
       }
@@ -345,22 +408,22 @@ public struct Board: Sendable {
 
     if checkState == .checkmate {
       state = .checkmate(color: moveColor.opposite)
-      delegate?.didEnd(with: .win(moveColor))
+      _delegate?.didEnd(state)
     } else if checkState == .stalemate {
       state = .draw(reason: .stalemate)
-      delegate?.didEnd(with: .draw(.stalemate))
+      _delegate?.didEnd(state)
     } else if position.clock.halfmoves >= Clock.halfMoveMaximum {
       state = .draw(reason: .fiftyMoves)
-      delegate?.didEnd(with: .draw(.fiftyMoves))
+      _delegate?.didEnd(state)
     } else if position.hasInsufficientMaterial {
       state = .draw(reason: .insufficientMaterial)
-      delegate?.didEnd(with: .draw(.insufficientMaterial))
+      _delegate?.didEnd(state)
     } else if positionHashCounts[position.hashValue] == 3 {
       state = .draw(reason: .repetition)
-      delegate?.didEnd(with: .draw(.repetition))
+      _delegate?.didEnd(state)
     } else if checkState == .check {
       state = .check(color: moveColor.opposite)
-      delegate?.didCheckKing(ofColor: moveColor.opposite)
+      _delegate?.didCheckKing(moveColor.opposite)
     } else {
       state = .active
     }

@@ -696,6 +696,58 @@ extension BoardTests {
     }
   }
 
+  // The three below pin what changed when the board stopped holding its
+  // delegate directly and started holding a forwarder built from it (to keep
+  // the deprecated type out of non-deprecated code): the only `didEnd` case the
+  // tests above did not reach, the getter, and the weak reference.
+
+  @available(*, deprecated, message: "Exercises the deprecated delegate on purpose.")
+  @Test func legacyStalemateMove() async {
+    var board = Board(position: .init(fen: "7k/4Q3/6K1/8/8/8/8/8 w - - 0 1")!)
+
+    await confirmation("Board returns stalemate result") { confirm in
+      let delegate = MockBoardDelegate(didEnd: { result in
+        if case .draw(.stalemate) = result {
+          confirm()
+        }
+      })
+
+      board.delegate = delegate
+      board.move(pieceAt: .e7, to: .f7)
+      #expect(board.state == .draw(reason: .stalemate))
+    }
+  }
+
+  @available(*, deprecated, message: "Exercises the deprecated delegate on purpose.")
+  @Test func legacyDelegateReadsBackAsTheObjectThatWasSet() {
+    var board = Board()
+    let delegate = MockBoardDelegate()
+
+    board.delegate = delegate
+    #expect(board.delegate === delegate)
+
+    board.delegate = nil
+    #expect(board.delegate == nil)
+  }
+
+  @available(*, deprecated, message: "Exercises the deprecated delegate on purpose.")
+  @Test func legacyDelegateIsHeldWeakly() {
+    var board = Board()
+    weak var released: MockBoardDelegate?
+
+    do {
+      let delegate = MockBoardDelegate()
+      released = delegate
+      board.delegate = delegate
+      #expect(board.delegate != nil)
+    }
+
+    // The board was the only other holder: if it held strongly, the object
+    // would still be alive here.
+    #expect(released == nil)
+    #expect(board.delegate == nil)
+  }
+
 }
 
 // MARK: - Skipping the state evaluation
