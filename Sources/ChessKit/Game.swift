@@ -96,6 +96,14 @@ public struct Game: Codable, Hashable, Sendable {
 
     var newPosition = currentPosition
 
+    // An en passant opportunity lasts exactly one move, so EVERY move clears
+    // the previous one — captures and castling included — and only a double
+    // pawn push below sets a new one. Clearing it in the `.move` branch alone
+    // let a capture or a castle carry a stale square forward: it printed in
+    // `fen`, fed `enPassantTarget`, and let `Board` offer an illegal capture.
+    newPosition.enPassant = nil
+    newPosition.enPassantIsPossible = false
+
     switch move.result {
     case .move:
       newPosition.move(pieceAt: move.start, to: move.end)
@@ -107,15 +115,7 @@ public struct Game: Codable, Hashable, Sendable {
            let movedPawn = newPosition.piece(at: move.end) {
           newPosition.enPassant = EnPassant(pawn: movedPawn)
           newPosition.enPassantIsPossible = true
-        } else {
-          // Clear en passant — pawn moved only one square.
-          newPosition.enPassant = nil
-          newPosition.enPassantIsPossible = false
         }
-      } else {
-        // Non-pawn move — clear en passant.
-        newPosition.enPassant = nil
-        newPosition.enPassantIsPossible = false
       }
     case let .capture(capturedPiece):
       newPosition.remove(capturedPiece)

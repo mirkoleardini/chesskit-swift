@@ -215,6 +215,10 @@ public struct Board: Sendable {
     {
       position.remove(enPassant.pawn)
       position.move(piece, to: end)
+      // The capture spends the opportunity: without this the state kept
+      // pointing at the pawn just removed, and `fen` still printed its square.
+      position.enPassant = nil
+      position.enPassantIsPossible = false
       return process(move: Move(result: .capture(enPassant.pawn), piece: piece, start: start, end: end))
     } else {
       position.enPassant = nil  // prevent en passant on next turn
