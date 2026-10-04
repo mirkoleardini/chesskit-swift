@@ -63,6 +63,23 @@ struct BoardTests {
     #expect(move.result == .capture(ep.pawn))
   }
 
+  @Test func enPassantResetsTheHalfmoveClock() {
+    // A pawn move and a capture each reset the fifty-move counter, and an en
+    // passant capture is both. The en passant branch of `move(pieceAt:to:)`
+    // returned early, before the capture branch that resets it, so the counter
+    // went UP instead — and `fen` printed 1 where the standard says 0.
+    var board = Board()
+    for (start, end) in [(Square.g1, Square.f3), (.g8, .f6), (.e2, .e4), (.b8, .c6), (.e4, .e5), (.d7, .d5)] {
+      board.move(pieceAt: start, to: end)
+    }
+    #expect(board.position.clock.halfmoves == 0)
+
+    board.move(pieceAt: .e5, to: .d6)
+
+    #expect(board.position.clock.halfmoves == 0)
+    #expect(board.position.fen.split(separator: " ")[4] == "0")
+  }
+
   @Test func illegalEnPassant() {
     // fen position contains illegal en passant move
     let board = Board(position: .init(fen: "1nbqkbnr/1pp1pppp/8/r1Pp3K/p7/5P2/PP1PP1PP/RNBQ1BNR w k d6 0 8")!)

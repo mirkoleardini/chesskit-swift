@@ -215,6 +215,9 @@ public struct Board: Sendable {
     {
       position.remove(enPassant.pawn)
       position.move(piece, to: end)
+      // A pawn move and a capture at once: the fifty-move counter restarts, as
+      // it does in the capture branch below, which this one returns before.
+      position.resetHalfmoveClock()
       // The capture spends the opportunity: without this the state kept
       // pointing at the pawn just removed, and `fen` still printed its square.
       position.enPassant = nil
