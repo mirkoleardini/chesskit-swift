@@ -162,7 +162,18 @@ public struct Position: Codable, Sendable {
   /// - parameter piece: The piece to remove from the position.
   ///
   /// If the piece is not currently located in the position, this method has no effect.
+  ///
+  /// A rook removed from its starting square takes its side's castling right on
+  /// that wing with it, as a rook moving away does in `move(_:to:)`: "captures
+  /// of rooks on their original squares reset the appropriate castling bits per
+  /// wing and side" (Chess Programming Wiki, Castling Rights). Every capture
+  /// goes through here — `Game.make` and `Board.move`, en passant included — so
+  /// this is the one place that needs it. For any other piece, or a rook
+  /// elsewhere, `invalidateCastling(for:)` changes nothing.
   mutating func remove(_ piece: Piece) {
+    if pieceSet.get(piece.square) == piece {
+      legalCastlings.invalidateCastling(for: piece)
+    }
     pieceSet.remove(piece)
   }
 
