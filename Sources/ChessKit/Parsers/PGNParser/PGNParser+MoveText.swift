@@ -106,12 +106,30 @@ extension PGNParser {
       var currentToken = iterator.next()
       var currentMoveIndex: MoveTree.Index
 
-      // Skip any leading comments that appear before the first move.
-      // ChessBase (and other tools) export a game comment such as
-      // `{[%evp ...]}` ahead of move 1; without this the parser would
-      // reject the whole game with `.unexpectedMoveTextToken`. There is
-      // no move to attach such a pre-game comment to, so it is dropped.
-      while case .comment = currentToken {
+      // ⭐️ A COMMENT BEFORE A MOVE IS THAT MOVE'S PRE-MOVE COMMENT. It is held
+      // here until the move exists, then stored as its `commentBefore`. It
+      // arrives in three places, and the writer itself produces the second
+      // (`12. {before} Nf3`, `PGNParser.movePGN`):
+      //   • before the first move of the game, ahead of its number;
+      //   • after a move number, before its move — on the main line too;
+      //   • at the opening of a variation, before its first move.
+      // Only the third was read as one. A leading comment was skipped (it made
+      // the whole game fail before, Bug 5 of chesskit-fixes.md), and one after a
+      // number went to the PREVIOUS move as its comment after, replacing the
+      // one it had — so a pre-move comment written by an app did not survive
+      // being written and read back.
+      var pendingComment: String?
+
+      func holdComment(_ comment: String) {
+        pendingComment = pendingComment.map { $0 + " " + comment } ?? comment
+      }
+
+      // Comments ahead of the first move: ChessBase (and other tools) export a
+      // game comment such as `{[%evp ...]}` there, and it belongs to the first
+      // move as much as one after its number does. What it holds that an app
+      // does not read is the app's to clean, not the parser's to drop.
+      while case let .comment(comment) = currentToken {
+        holdComment(comment)
         currentToken = iterator.next()
       }
 
@@ -132,6 +150,10 @@ extension PGNParser {
         if let position = game.positions[currentMoveIndex] {
           if let move = SANParser.parse(move: san, in: position) {
             currentMoveIndex = game.make(move: move, from: currentMoveIndex)
+            if let pending = pendingComment {
+              game.setCommentBefore(pending, at: currentMoveIndex)
+              pendingComment = nil
+            }
           } else {
             throw .invalidMove(san)
           }
@@ -146,34 +168,35 @@ extension PGNParser {
 
       var variationStack = Stack<MoveTree.Index>()
 
-      // A comment can appear at the very start of a variation, before its
-      // first move (e.g. `({Precedente:} 6... d5 ...)`). At that point
-      // `currentMoveIndex` is the branch-point move on the parent line, so
-      // attaching the comment there would mislabel (and overwrite) that
-      // move. Instead we buffer it and attach it to the variation's first
-      // move once it exists.
-      var pendingVariationComment: String?
-      var awaitingVariationFirstMove = false
+      // True from a move number, or from the opening of a variation, until the
+      // move that follows: a comment met meanwhile is that move's pre-move
+      // comment. At the opening of a variation `currentMoveIndex` is the
+      // branch-point move on the parent line (e.g. `({Precedente:} 6... d5)`),
+      // so attaching the comment there would mislabel (and overwrite) it.
+      // A game whose first token was its number starts in that state.
+      var beforeAMove: Bool
+      if case .number = currentToken { beforeAMove = true } else { beforeAMove = false }
 
       while let token = iterator.next() {
         currentToken = token
 
         switch currentToken {
-        case .none, .number, .result:
+        case .none, .result:
           break
+        case .number:
+          beforeAMove = true
         case let .san(san):
           if let position = game.positions[currentMoveIndex],
             let move = SANParser.parse(move: san, in: position)
           {
             currentMoveIndex = game.make(move: move, from: currentMoveIndex)
-            if awaitingVariationFirstMove, let pending = pendingVariationComment {
-              // A comment that opened the variation introduces this first
-              // move: store it as a *pre-move* comment so it renders before
-              // the move, not after it.
+            if let pending = pendingComment {
+              // Stored as a *pre-move* comment, so it renders before the
+              // move, not after it.
               game.setCommentBefore(pending, at: currentMoveIndex)
             }
-            pendingVariationComment = nil
-            awaitingVariationFirstMove = false
+            pendingComment = nil
+            beforeAMove = false
           } else {
             throw .invalidMove(san)
           }
@@ -221,23 +244,25 @@ extension PGNParser {
             throw .invalidAnnotation(annotation)
           }
         case let .comment(comment):
-          if awaitingVariationFirstMove {
-            pendingVariationComment = pendingVariationComment.map { $0 + " " + comment } ?? comment
+          if beforeAMove {
+            holdComment(comment)
           } else {
             game.setComment(comment, at: currentMoveIndex)
           }
         case .variationStart:
           variationStack.push(currentMoveIndex)
           currentMoveIndex = currentMoveIndex.previous
-          awaitingVariationFirstMove = true
+          beforeAMove = true
         case .variationEnd:
           if let index = variationStack.pop() {
             currentMoveIndex = index
           } else {
             throw .unpairedVariationDelimiter
           }
-          pendingVariationComment = nil
-          awaitingVariationFirstMove = false
+          // A comment held for a move that never came — `( {c} )` — has
+          // nothing to belong to.
+          pendingComment = nil
+          beforeAMove = false
         }
       }
 

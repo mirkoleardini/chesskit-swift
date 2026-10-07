@@ -586,7 +586,14 @@ public struct MoveTree: Codable, Hashable, Sendable {
       case let (x, y) where x < y:
         result.append(.whiteNumber(currentIndex.number))
       default:
-        break
+        // A black move whose comment comes BEFORE it takes its number: written
+        // straight after White's move, `1. e4 {after} {before} e5`, the second
+        // comment could not be told from the first and read back as White's.
+        // PGN gives a black move that follows commentary its number with three
+        // periods; added here for this case only, so no other PGN changes.
+        if currentIndex.color == .black, !currentNode.move.commentBefore.isEmpty {
+          result.append(.blackNumber(currentIndex.number))
+        }
       }
 
       result.append(.move(currentNode.move, currentIndex))
