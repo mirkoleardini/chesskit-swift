@@ -56,6 +56,18 @@ public struct Game: Codable, Hashable, Sendable {
     self = parsed
   }
 
+  /// Initialize a game from movetext alone, with no tag pairs.
+  ///
+  /// - parameter moveText: The movetext of a game — as ``moveText`` writes it.
+  /// - parameter position: The position the first move is played from.
+  /// Defaults to the standard starting position.
+  ///
+  /// The game has no tags: the movetext does not carry them, so whoever kept
+  /// it apart sets them.
+  public init(moveText: String, startingWith position: Position = .standard) throws {
+    self = try PGNParser.parse(moveText: moveText, startingWith: position)
+  }
+
   // MARK: Moves
 
   /// Perform the provided move in the game.
@@ -303,6 +315,17 @@ public struct Game: Codable, Hashable, Sendable {
   /// The PGN represenation of the game.
   public var pgn: String {
     PGNParser.convert(game: self)
+  }
+
+  /// The movetext of the game: moves, comments, assessments and variations,
+  /// without the tag pairs and without the result token.
+  ///
+  /// For keeping the movetext apart from tags that are held somewhere else;
+  /// ``init(moveText:startingWith:)`` reads it back, and
+  /// ``PGNParser/convert(tags:moveText:)`` joins it to tags into the same PGN
+  /// ``pgn`` writes.
+  public var moveText: String {
+    PGNParser.moveText(of: self)
   }
 
 }

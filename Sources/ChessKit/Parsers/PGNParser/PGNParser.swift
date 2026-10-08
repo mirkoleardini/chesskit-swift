@@ -66,6 +66,34 @@ public enum PGNParser {
     return game
   }
 
+  /// Parses movetext alone — no tag pairs — played from `position`.
+  ///
+  /// - parameter moveText: The movetext of a game: moves, move numbers,
+  /// comments, annotations and variations. A result token at its end is
+  /// read and has no effect.
+  /// - parameter position: The position the first move is played from.
+  /// - returns: A game with no tags.
+  /// - throws: ``Error`` indicating the first error encountered while
+  /// parsing `moveText`.
+  ///
+  /// For a movetext kept apart from its tags (``Game/moveText``). Its lines
+  /// are joined the way ``parse(game:)`` joins the lines of a movetext
+  /// section, so a comment that spans lines reads the same either way; a
+  /// blank line inside it is not a section break here, because there are no
+  /// sections.
+  public static func parse(
+    moveText: String,
+    startingWith position: Position = .standard
+  ) throws(Error) -> Game {
+    let lines = moveText
+      .replacingOccurrences(of: "\r\n", with: "\n")
+      .replacingOccurrences(of: "\r", with: "\n")
+      .components(separatedBy: "\n")
+      .map { $0.trimmingCharacters(in: .whitespaces) }
+      .filter { !$0.isEmpty && $0.prefix(1) != "%" }
+    return try MoveTextParser.game(from: lines.joined(separator: " "), startingPosition: position)
+  }
+
   /// Converts a ``Game`` object into a PGN string.
   ///
   /// - parameter game: The chess game to convert.
@@ -75,16 +103,28 @@ public enum PGNParser {
   /// export format.
   ///
   public static func convert(game: Game) -> String {
+    convert(tags: game.tags, moveText: moveText(of: game))
+  }
+
+  /// A PGN string from tag pairs and a movetext kept apart from them.
+  ///
+  /// - parameter tags: The tag pairs. The result token that closes the
+  /// movetext is `tags.result`.
+  /// - parameter moveText: The movetext, without a result token — as
+  /// ``Game/moveText`` writes it.
+  /// - returns: The same string ``convert(game:)`` returns for a game with
+  /// these tags and this movetext.
+  public static func convert(tags: Game.Tags, moveText: String) -> String {
     var pgn = ""
 
     // tags
 
-    game.tags.all
+    tags.all
       .map(\.pgn)
       .filter { !$0.isEmpty }
       .forEach { pgn += $0 + "\n" }
 
-    game.tags.other.sorted(by: <).forEach { key, value in
+    tags.other.sorted(by: <).forEach { key, value in
       pgn += "[\(key) \"\(PGNTagParser.escaped(tagValue: value))\"]\n"
     }
 
@@ -92,29 +132,36 @@ public enum PGNParser {
       pgn += "\n"  // extra line between tags and movetext
     }
 
-    // movetext
+    // movetext, then the result
+
+    pgn += moveText.isEmpty ? tags.result : moveText + " " + tags.result
+
+    return pgn.trimmingCharacters(in: .whitespaces)
+  }
+
+  /// The movetext of `game`: no tag pairs, no result token.
+  static func moveText(of game: Game) -> String {
+    var text = ""
 
     for element in game.moves.pgnRepresentation {
       switch element {
       case let .whiteNumber(number):
-        pgn += "\(number). "
+        text += "\(number). "
       case let .blackNumber(number):
-        pgn += "\(number)... "
+        text += "\(number)... "
       case let .move(move, _):
-        pgn += movePGN(for: move)
+        text += movePGN(for: move)
       case let .positionAssessment(assessment):
-        pgn += "\(assessment.rawValue) "
+        text += "\(assessment.rawValue) "
       case .variationStart:
-        pgn += "("
+        text += "("
       case .variationEnd:
-        pgn = pgn.trimmingCharacters(in: .whitespaces)
-        pgn += ") "
+        text = text.trimmingCharacters(in: .whitespaces)
+        text += ") "
       }
     }
 
-    pgn += game.tags.result
-
-    return pgn.trimmingCharacters(in: .whitespaces)
+    return text.trimmingCharacters(in: .whitespaces)
   }
 
   // MARK: Private
